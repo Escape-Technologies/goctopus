@@ -15,7 +15,7 @@ func SendPost(url string, body []byte) ([]byte, error) {
 	req.Header.SetContentType("application/json")
 	req.SetRequestURI(url)
 	req.SetBody(body)
-	req.SetTimeout(2 * time.Second)
+	req.SetTimeout(time.Second * 2)
 	defer fasthttp.ReleaseRequest(req)
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)

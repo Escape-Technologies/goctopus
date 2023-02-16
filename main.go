@@ -26,7 +26,7 @@ func worker(domains chan string, endpoints chan string, workerId int, wg *sync.W
 	log.Debugf("Worker %d finished\n", workerId)
 }
 
-func orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, endpoints chan string) {
+func orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, endpoints chan string, count int) {
 
 	domains := make(chan string)
 	wg := sync.WaitGroup{}
@@ -36,10 +36,12 @@ func orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, endpoints chan str
 		go worker(domains, endpoints, i, &wg)
 	}
 
+	i := 0
 	for inputBuffer.Scan() {
 		domain := inputBuffer.Text()
-		log.Debugf("Adding %v to the queue\n", domain)
+		log.Infof("(%d/%d) Adding %v to the queue\n", i,count, domain)
 		domains <- domain
+		i++
 	}
 
 	close(domains)
@@ -55,9 +57,9 @@ func main() {
 	// @todo make a shared config package: https://stackoverflow.com/questions/36528091/golang-sharing-configurations-between-packages
 	inputFile := "input.txt"
 	outputFile := "endpoints.txt"
-	maxWorkers := 200
+	maxWorkers := 500
 
-	log.SetLevel(log.DebugLevel)
+	// log.SetLevel(log.DebugLevel)
 
 	input, err := os.Open(inputFile)
 	if err != nil {
@@ -85,7 +87,7 @@ func main() {
 	defer out.Close()
 
 	endpoints := make(chan string, maxWorkers)
-	go orchestrator(inputBuffer, maxWorkers, endpoints)
+	go orchestrator(inputBuffer, maxWorkers, endpoints, count)
 
 	// -- OUTPUT --
 	for endpoint := range endpoints {
