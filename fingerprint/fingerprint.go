@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"time"
 
 	"github.com/valyala/fasthttp"
 )
@@ -14,6 +15,7 @@ func SendPost(url string, body []byte) ([]byte, error) {
 	req.Header.SetContentType("application/json")
 	req.SetRequestURI(url)
 	req.SetBody(body)
+	req.SetTimeout(2 * time.Second)
 	defer fasthttp.ReleaseRequest(req)
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
