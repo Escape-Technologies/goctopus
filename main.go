@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"sync"
@@ -51,17 +52,34 @@ func orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, endpoints chan str
 	log.Debugf("All workers finished")
 }
 
+type Config struct {
+	InputFile string
+	OutputFile string
+	MaxWorkers int
+	Verbose bool
+}
+
+func parseFlags() Config {
+	config := Config{}
+	flag.StringVar(&config.InputFile, "i", "input.txt", "Input file")
+	flag.StringVar(&config.OutputFile, "o", "endpoints.txt", "Output file")
+	flag.IntVar(&config.MaxWorkers, "w", 10, "Max workers")
+	flag.BoolVar(&config.Verbose, "v", false, "Verbose")
+	flag.Parse()
+	return config
+}
+
 func main() {
 	// -- PARAMS --
 	// @todo pass this in args/flags
 	// @todo make a shared config package: https://stackoverflow.com/questions/36528091/golang-sharing-configurations-between-packages
-	inputFile := "input.txt"
-	outputFile := "endpoints.txt"
-	maxWorkers := 500
+	config := parseFlags()
 
-	// log.SetLevel(log.DebugLevel)
+	if config.Verbose {
+		log.SetLevel(log.DebugLevel)
+	}
 
-	input, err := os.Open(inputFile)
+	input, err := os.Open(config.InputFile)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
@@ -78,16 +96,16 @@ func main() {
 	// Scan the file line by line
 	inputBuffer.Split(bufio.ScanLines)
 	// removes the file if it exists
-	os.Remove(outputFile)
-	out, err := os.OpenFile(outputFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	os.Remove(config.OutputFile)
+	out, err := os.OpenFile(config.OutputFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
 	}
 	defer out.Close()
 
-	endpoints := make(chan string, maxWorkers)
-	go orchestrator(inputBuffer, maxWorkers, endpoints, count)
+	endpoints := make(chan string, config.MaxWorkers)
+	go orchestrator(inputBuffer, config.MaxWorkers, endpoints, count)
 
 	// -- OUTPUT --
 	for endpoint := range endpoints {
