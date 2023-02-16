@@ -57,11 +57,14 @@ func main() {
 	outputFile := "endpoints.txt"
 	maxWorkers := 200
 
+	log.SetLevel(log.DebugLevel)
+
 	input, err := os.Open(inputFile)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
 	}
+	defer input.Close()
 
 	count, err := utils.CountLines(input)
 	if err != nil {
@@ -69,7 +72,6 @@ func main() {
 		os.Exit(1)
 	}
 	log.Infof("Starting goctopus on %d endpoints...\n", count)
-	defer input.Close()
 	inputBuffer := bufio.NewScanner(input)
 	// Scan the file line by line
 	inputBuffer.Split(bufio.ScanLines)
