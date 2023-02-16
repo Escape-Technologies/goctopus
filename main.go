@@ -7,20 +7,23 @@ import (
 	"sync"
 
 	"goctopus/fingerprint"
+	"goctopus/utils"
+
+	log "github.com/sirupsen/logrus"
 )
 
 func worker(domains chan string, endpoints chan string, workerId int, wg *sync.WaitGroup) {
 	defer wg.Done()
-	fmt.Printf("Worker %d instantiated\n", workerId)
+	log.Debugf("Worker %d instantiated\n", workerId)
 	for domain := range domains {
-		fmt.Printf("Worker %d started on: %v\n", workerId, domain)
+		log.Debugf("Worker %d started on: %v\n", workerId, domain)
 		endpoint, err := fingerprint.FingerprintDomain(domain)
 		if err == nil {
-			fmt.Println("Found: ", endpoint)
+			log.Debugf("Worker %d found endpoint: %v\n", workerId, endpoint)
 			endpoints <- endpoint
 		}	
 	}
-	fmt.Printf("Worker %d finished\n", workerId)
+	log.Debugf("Worker %d finished\n", workerId)
 }
 
 func orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, endpoints chan string) {
@@ -35,16 +38,15 @@ func orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, endpoints chan str
 
 	for inputBuffer.Scan() {
 		domain := inputBuffer.Text()
-		fmt.Printf("Adding %v to the queue\n", domain)
+		log.Debugf("Adding %v to the queue\n", domain)
 		domains <- domain
 	}
 
 	close(domains)
-	fmt.Println("Orchestrator finished, waiting for workers to finish...")
-
+	log.Debugf("Orchestrator finished, waiting for workers to finish...")
 	wg.Wait()
 	close(endpoints)
-	fmt.Println("All workers finished")
+	log.Debugf("All workers finished")
 }
 
 func main() {
@@ -57,9 +59,16 @@ func main() {
 
 	input, err := os.Open(inputFile)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		os.Exit(1)
 	}
+
+	count, err := utils.CountLines(input)
+	if err != nil {
+		log.Error(err)
+		os.Exit(1)
+	}
+	log.Infof("Starting goctopus on %d endpoints...\n", count)
 	defer input.Close()
 	inputBuffer := bufio.NewScanner(input)
 	// Scan the file line by line
@@ -68,7 +77,7 @@ func main() {
 	os.Remove(outputFile)
 	out, err := os.OpenFile(outputFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
-		fmt.Println(err)
+		log.Error(err)
 		os.Exit(1)
 	}
 	defer out.Close()
@@ -78,6 +87,7 @@ func main() {
 
 	// -- OUTPUT --
 	for endpoint := range endpoints {
+		log.Infof("Found endpoint: %v\n", endpoint)
 		fmt.Fprintln(out, endpoint)
 	}
 }

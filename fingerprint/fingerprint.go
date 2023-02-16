@@ -69,7 +69,6 @@ func FingerprintDomain(baseDomain string) (string, error) {
 		uri := fmt.Sprintf("https://%s/%s", baseDomain, route)
 		isGraphql := fingerprintUrl(uri)
 		if isGraphql {
-			fmt.Println(uri)
 			return uri, nil
 		}
 	}
