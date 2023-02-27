@@ -4,7 +4,8 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"goctopus/internal/http"
+
+	"github.com/Escape-Technologies/goctopus/internal/http"
 )
 
 

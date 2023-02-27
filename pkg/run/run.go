@@ -3,10 +3,11 @@ package run
 import (
 	"bufio"
 	"fmt"
-	"goctopus/internal/config"
-	"goctopus/internal/utils"
-	"goctopus/internal/workers"
 	"os"
+
+	"github.com/Escape-Technologies/goctopus/internal/config"
+	"github.com/Escape-Technologies/goctopus/internal/utils"
+	"github.com/Escape-Technologies/goctopus/internal/workers"
 
 	log "github.com/sirupsen/logrus"
 )

@@ -2,8 +2,9 @@ package workers
 
 import (
 	"bufio"
-	"goctopus/pkg/fingerprint"
 	"sync"
+
+	"github.com/Escape-Technologies/goctopus/pkg/fingerprint"
 
 	log "github.com/sirupsen/logrus"
 )

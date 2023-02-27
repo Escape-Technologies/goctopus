@@ -3,9 +3,9 @@ package main
 import (
 	"os"
 
-	"goctopus/internal/config"
-	"goctopus/internal/utils"
-	"goctopus/pkg/run"
+	"github.com/Escape-Technologies/goctopus/internal/config"
+	"github.com/Escape-Technologies/goctopus/internal/utils"
+	"github.com/Escape-Technologies/goctopus/pkg/run"
 
 	log "github.com/sirupsen/logrus"
 )
