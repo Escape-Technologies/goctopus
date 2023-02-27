@@ -73,6 +73,7 @@ func main() {
 	// -- PARAMS --
 	// @todo pass this in args/flags
 	// @todo make a shared config package: https://stackoverflow.com/questions/36528091/golang-sharing-configurations-between-packages
+	utils.PrintASCII()
 	config := parseFlags()
 
 	if config.Verbose {
