@@ -6,7 +6,6 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
-
 func Post(url string, body []byte) ([]byte, error) {
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod("POST")

@@ -18,7 +18,7 @@ func worker(domains chan string, endpoints chan string, workerId int, wg *sync.W
 		if err == nil {
 			log.Debugf("Worker %d found endpoint: %v\n", workerId, endpoint)
 			endpoints <- endpoint
-		}	
+		}
 	}
 	log.Debugf("Worker %d finished\n", workerId)
 }
@@ -36,7 +36,7 @@ func Orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, endpoints chan str
 	i := 0
 	for inputBuffer.Scan() {
 		domain := inputBuffer.Text()
-		log.Infof("(%d/%d) Adding %v to the queue\n", i,count, domain)
+		log.Infof("(%d/%d) Adding %v to the queue\n", i, count, domain)
 		domains <- domain
 		i++
 	}

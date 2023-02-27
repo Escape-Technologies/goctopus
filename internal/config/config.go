@@ -7,11 +7,11 @@ import (
 )
 
 type Config struct {
-	InputFile string
+	InputFile  string
 	OutputFile string
 	MaxWorkers int
-	Verbose bool
-	Silent bool
+	Verbose    bool
+	Silent     bool
 }
 
 func ParseFlags() Config {

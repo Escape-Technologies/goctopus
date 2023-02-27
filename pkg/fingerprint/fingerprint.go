@@ -8,7 +8,6 @@ import (
 	"github.com/Escape-Technologies/goctopus/internal/http"
 )
 
-
 type Data struct {
 	Typename string `json:"__typename" validate:"required"`
 }
@@ -24,7 +23,7 @@ func fingerprintUrl(url string) bool {
 		return false
 	}
 	var result Response
-  err = json.Unmarshal(res, &result)
+	err = json.Unmarshal(res, &result)
 	if err != nil {
 		return false
 	}
@@ -35,7 +34,7 @@ func fingerprintUrl(url string) bool {
 }
 
 func FingerprintDomain(baseDomain string) (string, error) {
-	routes := []string {
+	routes := []string{
 		"",
 		"graphql",
 		"api/graphql",
