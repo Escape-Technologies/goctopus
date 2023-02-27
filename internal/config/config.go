@@ -12,6 +12,7 @@ type Config struct {
 	MaxWorkers int
 	Verbose    bool
 	Silent     bool
+	Timeout    int
 }
 
 func ParseFlags() Config {
@@ -21,6 +22,7 @@ func ParseFlags() Config {
 	flag.IntVar(&config.MaxWorkers, "w", 10, "Max workers")
 	flag.BoolVar(&config.Verbose, "v", false, "Verbose")
 	flag.BoolVar(&config.Silent, "s", false, "Silent")
+	flag.IntVar(&config.Timeout, "t", 2, "Request timeout")
 	flag.Parse()
 
 	if config.Verbose {

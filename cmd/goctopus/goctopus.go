@@ -13,8 +13,10 @@ import (
 func main() {
 	// -- PARAMS --
 	// @todo make config a singleton package: https://stackoverflow.com/questions/36528091/golang-sharing-configurations-between-packages
-	utils.PrintASCII()
 	config := config.ParseFlags()
+	if !config.Silent {
+		utils.PrintASCII()
+	}
 
 	input, err := os.Open(config.InputFile)
 	if err != nil {
