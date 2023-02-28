@@ -6,6 +6,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var (
+	Conf *Config
+)
+
 type Config struct {
 	InputFile  string
 	OutputFile string
@@ -15,14 +19,14 @@ type Config struct {
 	Timeout    int
 }
 
-func ParseFlags() Config {
+func ParseFlags() {
 	config := Config{}
 	flag.StringVar(&config.InputFile, "i", "input.txt", "Input file")
 	flag.StringVar(&config.OutputFile, "o", "endpoints.txt", "Output file")
 	flag.IntVar(&config.MaxWorkers, "w", 10, "Max workers")
 	flag.BoolVar(&config.Verbose, "v", false, "Verbose")
 	flag.BoolVar(&config.Silent, "s", false, "Silent")
-	flag.IntVar(&config.Timeout, "t", 2, "Request timeout")
+	flag.IntVar(&config.Timeout, "t", 2, "Request timeout (seconds)")
 	flag.Parse()
 
 	if config.Verbose {
@@ -33,5 +37,5 @@ func ParseFlags() Config {
 		log.SetLevel(log.ErrorLevel)
 	}
 
-	return config
+	Conf = &config
 }

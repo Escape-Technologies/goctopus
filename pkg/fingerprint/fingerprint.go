@@ -38,13 +38,13 @@ func FingerprintDomain(baseDomain string) (string, error) {
 		"",
 		"graphql",
 		"api/graphql",
-		"api/v1/graphql",
 		"api/v2/graphql",
+		"api/v1/graphql",
 		"appsync",
 		"altair",
 		"graph",
-		"graphql/v1",
 		"graphql/v2",
+		"graphql/v1",
 		"api/graphql",
 	}
 	for _, route := range routes {
@@ -54,5 +54,5 @@ func FingerprintDomain(baseDomain string) (string, error) {
 			return uri, nil
 		}
 	}
-	return "", errors.New("no graphql endpoint found")
+	return "", errors.New("No graphql endpoint found")
 }

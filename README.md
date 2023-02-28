@@ -6,4 +6,4 @@ Blazing fast domain graphql fingerprinting.
 
 `testers` directory should be removed before release.
 
-https://beeceptor.com/ is usefull for testing (especially mocking slow endpoints and errors) -> but it has a low quota.
+Mockoon is usefull to mock the endpoints and test. There are some configs in the `test/mocks` directory.

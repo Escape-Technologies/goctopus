@@ -3,3 +3,4 @@ input.txt
 
 *.txt
 testers
+!test/**/input.txt
