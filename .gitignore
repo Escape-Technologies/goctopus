@@ -2,5 +2,6 @@ endpoints.txt
 input.txt
 
 *.txt
+*.jsonl
 testers
 !test/**/input.txt

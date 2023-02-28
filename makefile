@@ -2,6 +2,9 @@ mock = mockoon-cli start --data
 mock-p-name = --pname "goctopus-mock"
 goctopus = go run cmd/goctopus/goctopus.go
 
+goctopus:
+	$(goctopus)
+
 mock-latency: stop-mock
 	$(mock) ./test/timeout/mock.json $(mock-p-name)
 	

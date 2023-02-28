@@ -2,12 +2,13 @@ package run
 
 import (
 	"bufio"
-	"fmt"
+	"encoding/json"
 	"os"
 
 	"github.com/Escape-Technologies/goctopus/internal/config"
 	"github.com/Escape-Technologies/goctopus/internal/utils"
 	"github.com/Escape-Technologies/goctopus/internal/workers"
+	"github.com/Escape-Technologies/goctopus/pkg/fingerprint"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -30,12 +31,18 @@ func Run(input *os.File) {
 	}
 	defer out.Close()
 
-	endpoints := make(chan string, config.Conf.MaxWorkers)
-	go workers.Orchestrator(inputBuffer, config.Conf.MaxWorkers, endpoints, count)
+	output := make(chan fingerprint.Output, config.Conf.MaxWorkers)
+	go workers.Orchestrator(inputBuffer, config.Conf.MaxWorkers, output, count)
 
 	// -- OUTPUT --
-	for endpoint := range endpoints {
-		log.Infof("Found endpoint: %v\n", endpoint)
-		fmt.Fprintln(out, endpoint)
+	for output := range output {
+		log.Infof("Found: %+v\n", output)
+		jsonOutput, err := json.Marshal(output)
+		if err != nil {
+			log.Error(err)
+			os.Exit(1)
+		}
+		out.Write(jsonOutput)
+		out.Write([]byte("\n"))
 	}
 }

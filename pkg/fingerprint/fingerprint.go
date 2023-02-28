@@ -5,18 +5,17 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/Escape-Technologies/goctopus/internal/config"
 	"github.com/Escape-Technologies/goctopus/internal/http"
 )
 
-type Data struct {
-	Typename string `json:"__typename" validate:"required"`
-}
+func fingerprintGraphql(url string) bool {
+	type Response struct {
+		Data struct {
+			Typename string `json:"__typename"`
+		} `json:"data"`
+	}
 
-type Response struct {
-	Data Data `json:"data" validate:"required"`
-}
-
-func fingerprintUrl(url string) bool {
 	body := []byte(`{"query":"{__typename}"}`)
 	res, err := http.Post(url, body)
 	if err != nil {
@@ -33,7 +32,35 @@ func fingerprintUrl(url string) bool {
 	return false
 }
 
-func FingerprintDomain(baseDomain string) (string, error) {
+func fingerprintIntrospection(url string) bool {
+
+	type Response struct {
+		Data struct {
+			Schema struct {
+				QueryType struct {
+					Name string `json:"name"`
+				} `json:"queryType"`
+			} `json:"__schema"`
+		} `json:"data"`
+	}
+
+	body := []byte(`{"query": "query { __schema { queryType { name } } }"}`)
+	res, err := http.Post(url, body)
+	if err != nil {
+		return false
+	}
+	var result Response
+	err = json.Unmarshal(res, &result)
+	if err != nil {
+		return false
+	}
+	if result.Data.Schema.QueryType.Name != "" {
+		return true
+	}
+	return false
+}
+
+func FingerprintDomain(domain string) (Output, error) {
 	routes := []string{
 		"",
 		"graphql",
@@ -47,12 +74,26 @@ func FingerprintDomain(baseDomain string) (string, error) {
 		"graphql/v1",
 		"api/graphql",
 	}
+	// @todo add subdomain enumeration here
+	// @todo refactor this
 	for _, route := range routes {
-		uri := fmt.Sprintf("https://%s/%s", baseDomain, route)
-		isGraphql := fingerprintUrl(uri)
+		url := fmt.Sprintf("https://%s/%s", domain, route)
+		isGraphql := fingerprintGraphql(url)
 		if isGraphql {
-			return uri, nil
+			if config.Conf.Introspection {
+				hasIntrospection := fingerprintIntrospection(url)
+				return IsGraphqlOutput{
+					Url:           url,
+					Introspection: hasIntrospection,
+					Domain:        domain,
+				}, nil
+			}
+			return IsGraphqlOutput{
+				Url:           url,
+				Introspection: false,
+				Domain:        domain,
+			}, nil
 		}
 	}
-	return "", errors.New("No graphql endpoint found")
+	return nil, errors.New("no graphql endpoint found")
 }
