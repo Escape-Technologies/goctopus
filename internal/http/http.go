@@ -10,7 +10,7 @@ import (
 )
 
 type Client interface {
-	Post(url string, body []byte) ([]byte, error)
+	Post(url string, body []byte) (*fasthttp.Response, error)
 }
 
 type client struct{}
@@ -31,7 +31,7 @@ func init() {
 	}
 }
 
-func (c *client) Post(url string, body []byte) ([]byte, error) {
+func (c *client) Post(url string, body []byte) (*fasthttp.Response, error) {
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod("POST")
 	req.Header.SetContentType("application/json")
@@ -47,6 +47,9 @@ func (c *client) Post(url string, body []byte) ([]byte, error) {
 		log.Debugf("Error from %v: %v", url, err)
 		return nil, err
 	}
-	log.Debugf("Response from %v: %v", url, string(resp.Body()))
-	return resp.Body(), nil
+	log.Debugf("Recived status code %v: %v", resp.StatusCode(), string(resp.Body()))
+	// The response has to be copied because it will be released after the function returns
+	respCopy := fasthttp.Response{}
+	resp.CopyTo(&respCopy)
+	return &respCopy, nil
 }

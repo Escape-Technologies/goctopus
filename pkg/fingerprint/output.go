@@ -9,8 +9,8 @@ import (
 type FingerprintResult string
 
 const (
-	IsGraphql    FingerprintResult = "IS_GRAPHQL"
-	MaybeGraphql FingerprintResult = "MAYBE_GRAPHQL"
+	ResultIsGraphql    FingerprintResult = "IS_GRAPHQL"
+	ResultMaybeGraphql FingerprintResult = "MAYBE_GRAPHQL"
 )
 
 type FingerprintOutput struct {

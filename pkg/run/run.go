@@ -40,8 +40,8 @@ func RunFromFile(input *os.File) {
 
 	// -- OUTPUT --
 	for output := range output {
-		log.Infof("Found: %+v\n", output)
 		jsonOutput, err := json.Marshal(output)
+		log.Infof("Found: %+v\n", string(jsonOutput))
 		if err != nil {
 			log.Error(err)
 			os.Exit(1)
