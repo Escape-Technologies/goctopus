@@ -6,10 +6,10 @@ import (
 	"github.com/Escape-Technologies/goctopus/internal/config"
 )
 
-func FingerprintUrl(url string, fp Fingerprinter) (*FingerprintOutput, error) {
+func FingerprintUrl(url string, fp Fingerprinter, config *config.Config) (*FingerprintOutput, error) {
 	isGraphql := fp.Graphql()
 	if isGraphql {
-		if config.Conf.Introspection {
+		if config.Introspection {
 			hasIntrospection := fp.Introspection()
 			return &FingerprintOutput{
 				Url:           url,

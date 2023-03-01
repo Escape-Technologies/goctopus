@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 
+	"github.com/Escape-Technologies/goctopus/internal/config"
 	"github.com/Escape-Technologies/goctopus/pkg/fingerprint"
 )
 
@@ -25,7 +26,7 @@ func CrawlSubDomain(domain string) (*fingerprint.FingerprintOutput, error) {
 	for _, route := range routes {
 		url := fmt.Sprintf("https://%s/%s", domain, route)
 		fp := fingerprint.NewFingerprinter(url, domain)
-		output, err := fingerprint.FingerprintUrl(url, fp)
+		output, err := fingerprint.FingerprintUrl(url, fp, config.Conf)
 		if err == nil {
 			output.Domain = domain
 			return output, nil

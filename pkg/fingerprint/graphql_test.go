@@ -3,7 +3,7 @@ package fingerprint
 import (
 	"testing"
 
-	"github.com/Escape-Technologies/goctopus/test/helpers"
+	"github.com/Escape-Technologies/goctopus/internal/test/helpers"
 	"github.com/valyala/fasthttp"
 )
 

@@ -3,7 +3,7 @@ package fingerprint
 import (
 	"testing"
 
-	"github.com/Escape-Technologies/goctopus/test/helpers"
+	"github.com/Escape-Technologies/goctopus/internal/test/helpers"
 	"github.com/valyala/fasthttp"
 )
 
@@ -57,5 +57,4 @@ func TestIsValidIntrospectionResponse(t *testing.T) {
 			t.Errorf("IsValidGraphqlResponse() was incorrect for %+v, got: %v, want: %v.", table.resp, got, table.want)
 		}
 	}
-
 }
