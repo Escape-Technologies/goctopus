@@ -25,5 +25,5 @@ func main() {
 	}
 	defer input.Close()
 
-	run.Run(input)
+	run.RunFromFile(input)
 }

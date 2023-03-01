@@ -13,7 +13,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func Run(input *os.File) {
+func RunFromFile(input *os.File) {
 	count, err := utils.CountLines(input)
 	if err != nil {
 		log.Error(err)
@@ -31,7 +31,7 @@ func Run(input *os.File) {
 	}
 	defer out.Close()
 
-	output := make(chan fingerprint.Output, config.Conf.MaxWorkers)
+	output := make(chan fingerprint.FingerprintOutput, config.Conf.MaxWorkers)
 	go workers.Orchestrator(inputBuffer, config.Conf.MaxWorkers, output, count)
 
 	// -- OUTPUT --
@@ -46,3 +46,5 @@ func Run(input *os.File) {
 		out.Write([]byte("\n"))
 	}
 }
+
+//@todo run from list of domains

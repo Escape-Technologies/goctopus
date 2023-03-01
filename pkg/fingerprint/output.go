@@ -26,19 +26,28 @@ type MaybeGraphqlOutput struct {
 	Urls   []string
 }
 
-type Output interface {
+type FingerprintOutput interface {
 	GetType() OutputType
+	SetDomain(domain string)
 }
 
-func (o IsGraphqlOutput) GetType() OutputType {
+func (o *IsGraphqlOutput) GetType() OutputType {
 	return IsGraphql
 }
 
-func (o MaybeGraphqlOutput) GetType() OutputType {
+func (o *MaybeGraphqlOutput) GetType() OutputType {
 	return MaybeGraphql
 }
 
-func (o IsGraphqlOutput) MarshalJSON() ([]byte, error) {
+func (o *IsGraphqlOutput) SetDomain(domain string) {
+	o.Domain = domain
+}
+
+func (o *MaybeGraphqlOutput) SetDomain(domain string) {
+	o.Domain = domain
+}
+
+func (o *IsGraphqlOutput) MarshalJSON() ([]byte, error) {
 	type Base struct {
 		Type   OutputType `json:"type"`
 		Domain string     `json:"domain"`
@@ -69,7 +78,7 @@ func (o IsGraphqlOutput) MarshalJSON() ([]byte, error) {
 	})
 }
 
-func (o MaybeGraphqlOutput) MarshalJSON() ([]byte, error) {
+func (o *MaybeGraphqlOutput) MarshalJSON() ([]byte, error) {
 	return json.Marshal(struct {
 		Type   OutputType `json:"type"`
 		Domain string     `json:"domain"`
