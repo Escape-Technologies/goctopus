@@ -24,3 +24,5 @@ func FingerprintUrl(url string, fp Fingerprinter) (*FingerprintOutput, error) {
 	}
 	return nil, errors.New("no graphql endpoint found on this route")
 }
+
+// @todo FingerprintMaybeGraphql

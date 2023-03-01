@@ -5,6 +5,9 @@ goctopus = go run cmd/goctopus/goctopus.go
 goctopus:
 	$(goctopus)
 
+test:
+	go test ./...
+
 mock-latency: stop-mock
 	$(mock) ./test/timeout/mock.json $(mock-p-name)
 	
@@ -13,3 +16,6 @@ stop-mock:
 
 test-latency: mock-latency
 	time $(goctopus) -i test/timeout/input.txt -v
+
+
+.PHONY: test

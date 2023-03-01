@@ -3,7 +3,6 @@ package fingerprint
 import (
 	"encoding/json"
 
-	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
 
@@ -13,7 +12,6 @@ var (
 
 func IsValidIntrospectionResponse(resp *fasthttp.Response) bool {
 	if resp.StatusCode() != 200 {
-		log.Debugf("Recived status code %v: %v", resp.StatusCode())
 		return false
 	}
 	body := resp.Body()
