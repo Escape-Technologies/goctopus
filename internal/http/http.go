@@ -9,6 +9,16 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+type Client interface {
+	Post(url string, body []byte) ([]byte, error)
+}
+
+type client struct{}
+
+func NewClient() Client {
+	return &client{}
+}
+
 var (
 	fastHttpClient *fasthttp.Client
 )
@@ -21,7 +31,7 @@ func init() {
 	}
 }
 
-func Post(url string, body []byte) ([]byte, error) {
+func (c *client) Post(url string, body []byte) ([]byte, error) {
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod("POST")
 	req.Header.SetContentType("application/json")

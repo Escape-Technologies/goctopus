@@ -6,23 +6,28 @@ import (
 	"github.com/Escape-Technologies/goctopus/internal/http"
 )
 
-type UrlFingerprinter interface {
-	// @todo http client here for mocking
+// @todo graphql and introspection could be in separate files
+
+type Fingerprinter interface {
 	Graphql() bool
 	Introspection() bool
 }
 
-type urlFingerprinter struct {
-	url string
+type fingerprinter struct {
+	url    string
+	client http.Client
+	//@todo http client here for mocking
 }
 
-func NewUrlFingerprinter(url string) *urlFingerprinter {
-	return &urlFingerprinter{
-		url: url,
+func NewFingerprinter(url string) *fingerprinter {
+	client := http.NewClient()
+	return &fingerprinter{
+		url:    url,
+		client: client,
 	}
 }
 
-func (fp *urlFingerprinter) Graphql() bool {
+func (fp *fingerprinter) Graphql() bool {
 	type Response struct {
 		Data struct {
 			Typename string `json:"__typename"`
@@ -30,7 +35,7 @@ func (fp *urlFingerprinter) Graphql() bool {
 	}
 
 	body := []byte(`{"query":"{__typename}"}`)
-	res, err := http.Post(fp.url, body)
+	res, err := fp.client.Post(fp.url, body)
 	if err != nil {
 		return false
 	}
@@ -45,7 +50,7 @@ func (fp *urlFingerprinter) Graphql() bool {
 	return false
 }
 
-func (fp *urlFingerprinter) Introspection() bool {
+func (fp *fingerprinter) Introspection() bool {
 	type Response struct {
 		Data struct {
 			Schema struct {
@@ -57,7 +62,7 @@ func (fp *urlFingerprinter) Introspection() bool {
 	}
 
 	body := []byte(`{"query": "query { __schema { queryType { name } } }"}`)
-	res, err := http.Post(fp.url, body)
+	res, err := fp.client.Post(fp.url, body)
 	if err != nil {
 		return false
 	}

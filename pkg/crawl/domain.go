@@ -8,16 +8,7 @@ import (
 	"github.com/Escape-Technologies/goctopus/pkg/fingerprint"
 )
 
-// type DomainCrawler interface {
-
-// func Domain(domain string) (Output, error) {
-// 	// @todo add subdomain enumeration here
-// 	return FingerprintSubDomain(domain)
-// }
-
-// extract those
-
-func CrawlSubDomain(domain string) (fingerprint.FingerprintOutput, error) {
+func CrawlSubDomain(domain string) (*fingerprint.FingerprintOutput, error) {
 	routes := []string{
 		"",
 		"graphql",
@@ -32,30 +23,33 @@ func CrawlSubDomain(domain string) (fingerprint.FingerprintOutput, error) {
 		"api/graphql",
 	}
 	// @todo refactor this
-	fp := fingerprint.NewUrlFingerprinter(domain)
 	for _, route := range routes {
 		url := fmt.Sprintf("https://%s/%s", domain, route)
+		fp := fingerprint.NewFingerprinter(url)
 		output, err := CrawlRoute(url, fp)
 		if err == nil {
+			output.Domain = domain
 			return output, nil
 		}
 	}
 	return nil, errors.New("no graphql endpoint found")
 }
 
-func CrawlRoute(url string, fp fingerprint.UrlFingerprinter) (fingerprint.FingerprintOutput, error) {
+// @note this is the problematic function, hard to test and really important
+func CrawlRoute(url string, fp fingerprint.Fingerprinter) (*fingerprint.FingerprintOutput, error) {
 	isGraphql := fp.Graphql()
 	if isGraphql {
 		if config.Conf.Introspection {
 			hasIntrospection := fp.Introspection()
-			return &fingerprint.IsGraphqlOutput{
+			return &fingerprint.FingerprintOutput{
 				Url:           url,
 				Introspection: hasIntrospection,
+				Type:          fingerprint.IsGraphql,
 			}, nil
 		}
-		return &fingerprint.IsGraphqlOutput{
-			Url:           url,
-			Introspection: false,
+		return &fingerprint.FingerprintOutput{
+			Url:  url,
+			Type: fingerprint.IsGraphql,
 		}, nil
 	}
 	return nil, errors.New("no graphql endpoint found on this route")

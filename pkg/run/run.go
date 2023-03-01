@@ -13,6 +13,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// @todo refactor this to decouple from the filesystem
+// make it a run function that takes a list of domains
+// maybe a second function that takes a channel of domains
+// the file io should be in internal/io
 func RunFromFile(input *os.File) {
 	count, err := utils.CountLines(input)
 	if err != nil {
@@ -31,7 +35,7 @@ func RunFromFile(input *os.File) {
 	}
 	defer out.Close()
 
-	output := make(chan fingerprint.FingerprintOutput, config.Conf.MaxWorkers)
+	output := make(chan *fingerprint.FingerprintOutput, config.Conf.MaxWorkers)
 	go workers.Orchestrator(inputBuffer, config.Conf.MaxWorkers, output, count)
 
 	// -- OUTPUT --

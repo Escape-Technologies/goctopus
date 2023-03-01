@@ -10,7 +10,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func worker(domains chan string, output chan fingerprint.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
+func worker(domains chan string, output chan *fingerprint.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	log.Debugf("Worker %d instantiated\n", workerId)
 	for domain := range domains {
@@ -24,7 +24,7 @@ func worker(domains chan string, output chan fingerprint.FingerprintOutput, work
 	log.Debugf("Worker %d finished\n", workerId)
 }
 
-func Orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, output chan fingerprint.FingerprintOutput, count int) {
+func Orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, output chan *fingerprint.FingerprintOutput, count int) {
 
 	domains := make(chan string)
 	wg := sync.WaitGroup{}
