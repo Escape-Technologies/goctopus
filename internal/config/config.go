@@ -19,12 +19,14 @@ type Config struct {
 	Timeout         int
 	Introspection   bool
 	FieldSuggestion bool
+	WebhookUrl      string
 }
 
 func ParseFlags() {
 	config := Config{}
 	flag.StringVar(&config.InputFile, "i", "input.txt", "Input file")
 	flag.StringVar(&config.OutputFile, "o", "output.jsonl", "Output file (json-lines format)")
+	flag.StringVar(&config.WebhookUrl, "webhook", "", "Webhook URL")
 	flag.IntVar(&config.MaxWorkers, "w", 10, "Max workers")
 	flag.BoolVar(&config.Verbose, "v", false, "Verbose")
 	flag.BoolVar(&config.Silent, "s", false, "Silent")

@@ -62,3 +62,23 @@ func (c *client) Post(url string, body []byte) (*Response, error) {
 	}
 	return response, nil
 }
+
+func SendToWebhook(body []byte) error {
+	log.Debugf("webhook url: %v", config.Conf.WebhookUrl)
+
+	if config.Conf.WebhookUrl == "" {
+		return nil
+	}
+	req := fasthttp.AcquireRequest()
+	req.Header.SetMethod("POST")
+	req.Header.SetContentType("application/json")
+	req.SetRequestURI(config.Conf.WebhookUrl)
+	req.SetBody(body)
+	defer fasthttp.ReleaseRequest(req)
+	log.Debug("Sending to webhook")
+	err := fastHttpClient.Do(req, nil)
+	if err != nil {
+		log.Debugf("Error from %v: %v", config.Conf.WebhookUrl, err)
+	}
+	return err
+}

@@ -6,6 +6,7 @@ import (
 	"os"
 
 	"github.com/Escape-Technologies/goctopus/internal/config"
+	"github.com/Escape-Technologies/goctopus/internal/http"
 	"github.com/Escape-Technologies/goctopus/internal/utils"
 	"github.com/Escape-Technologies/goctopus/internal/workers"
 	out "github.com/Escape-Technologies/goctopus/pkg/output"
@@ -47,8 +48,9 @@ func RunFromFile(input *os.File) {
 		log.Infof("Found: %+v\n", string(jsonOutput))
 		if err != nil {
 			log.Error(err)
-			os.Exit(1)
+			// os.Exit(1)
 		}
+		http.SendToWebhook(jsonOutput)
 		outputFile.Write(jsonOutput)
 		outputFile.Write([]byte("\n"))
 	}
