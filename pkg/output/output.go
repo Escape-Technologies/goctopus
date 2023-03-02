@@ -1,4 +1,4 @@
-package fingerprint
+package output
 
 import (
 	"encoding/json"
@@ -17,40 +17,33 @@ type FingerprintOutput struct {
 	Type            FingerprintResult `json:"type"`
 	Domain          string            `json:"domain"`
 	Url             string            `json:"url"`
-	Introspection   bool              `json:"introspection,omitempty"`
-	FieldSuggestion bool              `json:"field_suggestion,omitempty"`
+	Introspection   bool              `json:"introspection"`
+	FieldSuggestion bool              `json:"field_suggestion"`
 }
 
-// @todo: make this work -> segfaults
-// func (o *FingerprintOutput) MarshalJSON() ([]byte, error) {
-// 	// Removes the introspection field from the output if it is disabled
-
-// 	// transform the output to a map
-// 	var outputMap map[string]interface{}
-// 	outputBytes, _ := json.Marshal(o)
-// 	json.Unmarshal(outputBytes, &outputMap)
-
-// 	// remove the introspection field if it is disabled
-// 	if !config.Conf.Introspection {
-// 		delete(outputMap, "introspection")
-// 	}
-
-// 	return json.Marshal(outputMap)
-// }
-
 func (o *FingerprintOutput) MarshalJSON() ([]byte, error) {
+	return marshalOutput(o, config.Conf)
+}
+
+// This is separated from the above function to decouple the output from the config
+func marshalOutput(o *FingerprintOutput, c *config.Config) ([]byte, error) {
 	// Removes the introspection field from the output if it is disabled
-	if !config.Conf.Introspection {
-		return json.Marshal(FingerprintOutput{
-			Type:   o.Type,
-			Domain: o.Domain,
-			Url:    o.Url,
-		})
+
+	// transform the output to a map
+	outputMap := make(map[string]interface{})
+	// this is need to avoid an infinite recursion
+	type alias FingerprintOutput
+	outputBytes, _ := json.Marshal((*alias)(o))
+	json.Unmarshal(outputBytes, &outputMap)
+
+	// remove the introspection field if it is disabled
+	if !c.Introspection {
+		delete(outputMap, "introspection")
 	}
-	return json.Marshal(FingerprintOutput{
-		Type:          o.Type,
-		Domain:        o.Domain,
-		Url:           o.Url,
-		Introspection: o.Introspection,
-	})
+
+	if !c.FieldSuggestion {
+		delete(outputMap, "field_suggestion")
+	}
+
+	return json.Marshal(outputMap)
 }
