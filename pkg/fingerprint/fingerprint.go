@@ -8,26 +8,21 @@ import (
 )
 
 func FingerprintUrl(url string, fp Fingerprinter, config *config.Config) (*out.FingerprintOutput, error) {
-	isGraphql := fp.Graphql()
-	if isGraphql {
-		if config.Introspection {
-			hasIntrospection := fp.Introspection()
-			// if hasIntrospection {
-			// 	hasFieldSuggestion := fp.FieldSuggestion()
-
-			// }
-			return &out.FingerprintOutput{
-				Url:           url,
-				Introspection: hasIntrospection,
-				Type:          out.ResultIsGraphql,
-			}, nil
-		}
-		return &out.FingerprintOutput{
-			Url:  url,
-			Type: out.ResultIsGraphql,
-		}, nil
+	out := &out.FingerprintOutput{
+		Url:  url,
+		Type: out.ResultIsGraphql,
 	}
-	return nil, errors.New("no graphql endpoint found on this route")
+	isGraphql := fp.Graphql()
+	if !isGraphql {
+		return nil, errors.New("no graphql endpoint found on this route")
+	}
+	if isGraphql && config.Introspection {
+		out.Introspection = fp.Introspection()
+	}
+	if out.Introspection && config.FieldSuggestion {
+		out.FieldSuggestion = fp.FieldSuggestion()
+	}
+	return out, nil
 }
 
 // @todo FingerprintMaybeGraphql

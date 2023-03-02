@@ -24,9 +24,6 @@ func MatchFieldSuggestionRegex(message string) bool {
 }
 
 func IsSuggestionResponse(resp *http.Response) bool {
-	if resp.StatusCode != 200 {
-		return false
-	}
 	body := resp.Body
 
 	type Response struct {

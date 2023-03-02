@@ -51,7 +51,7 @@ func TestIsSuggestionResponse(t *testing.T) {
 		},
 		{
 			helpers.MockHttpResponse(
-				200,
+				400,
 				`{
 					"errors": 
 						[
