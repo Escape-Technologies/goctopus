@@ -34,10 +34,10 @@ func Orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, output chan *out.F
 		go worker(domains, output, i, &wg)
 	}
 
-	i := 0
+	i := 1
 	for inputBuffer.Scan() {
 		domain := inputBuffer.Text()
-		log.Infof("(%d/%d) Adding %v to the queue\n", i+1, count+1, domain)
+		log.Infof("(%d/%d) Adding %v to the queue\n", i, count, domain)
 		domains <- domain
 		i++
 	}

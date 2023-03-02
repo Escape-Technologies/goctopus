@@ -35,8 +35,11 @@ func RunFromFile(input *os.File) {
 	}
 	defer outputFile.Close()
 
-	output := make(chan *out.FingerprintOutput, config.Conf.MaxWorkers)
-	go workers.Orchestrator(inputBuffer, config.Conf.MaxWorkers, output, count)
+	// Limit the number of workers to the number of domains if the number of domains is less than the max workers
+	maxWorkers := utils.MinInt(count, config.Conf.MaxWorkers)
+	log.Infof("Starting %d workers\n", maxWorkers)
+	output := make(chan *out.FingerprintOutput, maxWorkers)
+	go workers.Orchestrator(inputBuffer, maxWorkers, output, count)
 
 	// -- OUTPUT --
 	for output := range output {

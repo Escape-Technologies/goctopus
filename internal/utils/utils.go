@@ -8,9 +8,16 @@ import (
 	"os"
 )
 
+func MinInt(a, b int) int {
+	if a <= b {
+		return a
+	}
+	return b
+}
+
 func CountLines(f *os.File) (int, error) {
 	buf := make([]byte, 32*1024)
-	count := 0
+	count := 1
 	lineSep := []byte{'\n'}
 
 	for {
