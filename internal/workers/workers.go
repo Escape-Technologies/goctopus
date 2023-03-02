@@ -5,12 +5,12 @@ import (
 	"sync"
 
 	"github.com/Escape-Technologies/goctopus/pkg/crawl"
-	"github.com/Escape-Technologies/goctopus/pkg/fingerprint"
+	out "github.com/Escape-Technologies/goctopus/pkg/output"
 
 	log "github.com/sirupsen/logrus"
 )
 
-func worker(domains chan string, output chan *fingerprint.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
+func worker(domains chan string, output chan *out.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	log.Debugf("Worker %d instantiated\n", workerId)
 	for domain := range domains {
@@ -24,7 +24,7 @@ func worker(domains chan string, output chan *fingerprint.FingerprintOutput, wor
 	log.Debugf("Worker %d finished\n", workerId)
 }
 
-func Orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, output chan *fingerprint.FingerprintOutput, count int) {
+func Orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, output chan *out.FingerprintOutput, count int) {
 
 	domains := make(chan string)
 	wg := sync.WaitGroup{}

@@ -6,9 +6,10 @@ import (
 
 	"github.com/Escape-Technologies/goctopus/internal/config"
 	"github.com/Escape-Technologies/goctopus/pkg/fingerprint"
+	out "github.com/Escape-Technologies/goctopus/pkg/output"
 )
 
-func CrawlSubDomain(domain string) (*fingerprint.FingerprintOutput, error) {
+func CrawlSubDomain(domain string) (*out.FingerprintOutput, error) {
 	routes := []string{
 		"",
 		"graphql",

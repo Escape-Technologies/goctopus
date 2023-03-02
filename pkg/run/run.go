@@ -8,7 +8,7 @@ import (
 	"github.com/Escape-Technologies/goctopus/internal/config"
 	"github.com/Escape-Technologies/goctopus/internal/utils"
 	"github.com/Escape-Technologies/goctopus/internal/workers"
-	"github.com/Escape-Technologies/goctopus/pkg/fingerprint"
+	out "github.com/Escape-Technologies/goctopus/pkg/output"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -28,14 +28,14 @@ func RunFromFile(input *os.File) {
 	inputBuffer.Split(bufio.ScanLines)
 	// removes the file if it exists
 	os.Remove(config.Conf.OutputFile)
-	out, err := os.OpenFile(config.Conf.OutputFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	outputFile, err := os.OpenFile(config.Conf.OutputFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		log.Error(err)
 		os.Exit(1)
 	}
-	defer out.Close()
+	defer outputFile.Close()
 
-	output := make(chan *fingerprint.FingerprintOutput, config.Conf.MaxWorkers)
+	output := make(chan *out.FingerprintOutput, config.Conf.MaxWorkers)
 	go workers.Orchestrator(inputBuffer, config.Conf.MaxWorkers, output, count)
 
 	// -- OUTPUT --
@@ -46,8 +46,8 @@ func RunFromFile(input *os.File) {
 			log.Error(err)
 			os.Exit(1)
 		}
-		out.Write(jsonOutput)
-		out.Write([]byte("\n"))
+		outputFile.Write(jsonOutput)
+		outputFile.Write([]byte("\n"))
 	}
 }
 

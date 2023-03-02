@@ -11,13 +11,14 @@ var (
 )
 
 type Config struct {
-	InputFile     string
-	OutputFile    string
-	MaxWorkers    int
-	Verbose       bool
-	Silent        bool
-	Timeout       int
-	Introspection bool
+	InputFile       string
+	OutputFile      string
+	MaxWorkers      int
+	Verbose         bool
+	Silent          bool
+	Timeout         int
+	Introspection   bool
+	FieldSuggestion bool
 }
 
 func ParseFlags() {
@@ -28,7 +29,8 @@ func ParseFlags() {
 	flag.BoolVar(&config.Verbose, "v", false, "Verbose")
 	flag.BoolVar(&config.Silent, "s", false, "Silent")
 	flag.IntVar(&config.Timeout, "t", 2, "Request timeout (seconds)")
-	flag.BoolVar(&config.Introspection, "introspection", false, "Enable introspection fingerprinting (default: true)")
+	flag.BoolVar(&config.Introspection, "introspect", false, "Enable introspection fingerprinting")
+	flag.BoolVar(&config.FieldSuggestion, "suggest", false, "Enable fields suggestion fingerprinting.\nNeeds \"introspection\" to be enabled.")
 
 	flag.Parse()
 

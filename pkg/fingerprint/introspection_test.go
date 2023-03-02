@@ -3,15 +3,13 @@ package fingerprint
 import (
 	"testing"
 
+	"github.com/Escape-Technologies/goctopus/internal/http"
 	"github.com/Escape-Technologies/goctopus/internal/test/helpers"
-	"github.com/valyala/fasthttp"
 )
 
 func TestIsValidIntrospectionResponse(t *testing.T) {
-	resp := &fasthttp.Response{}
-	resp.AppendBody([]byte(`{"data":{"__typename":"Query"}}`))
 	tables := []struct {
-		resp *fasthttp.Response
+		resp *http.Response
 		want bool
 	}{
 		{

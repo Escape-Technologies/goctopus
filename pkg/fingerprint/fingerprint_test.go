@@ -6,11 +6,13 @@ import (
 	"testing"
 
 	"github.com/Escape-Technologies/goctopus/internal/config"
+	out "github.com/Escape-Technologies/goctopus/pkg/output"
 )
 
 type mockedFingerprinter struct {
-	graphql       bool
-	introspection bool
+	graphql         bool
+	introspection   bool
+	fieldSuggestion bool
 }
 
 func (m *mockedFingerprinter) Graphql() bool {
@@ -21,6 +23,10 @@ func (m *mockedFingerprinter) Introspection() bool {
 	return m.introspection
 }
 
+func (m *mockedFingerprinter) FieldSuggestion() bool {
+	return m.fieldSuggestion
+}
+
 func makeMockedFingerprinter(graphql bool, introspection bool) *mockedFingerprinter {
 	return &mockedFingerprinter{
 		graphql:       graphql,
@@ -28,22 +34,23 @@ func makeMockedFingerprinter(graphql bool, introspection bool) *mockedFingerprin
 	}
 }
 
+// @todo test field suggestion
 func TestFingerprintUrl(t *testing.T) {
 
 	url := "https://example.com/graphql"
-	_type := ResultIsGraphql
+	_type := out.ResultIsGraphql
 
 	table := []struct {
 		graphql                    bool
 		introspection              bool
-		expectedOutput             *FingerprintOutput
+		expectedOutput             *out.FingerprintOutput
 		expectedErr                error
 		configIntrospectionEnabled bool
 	}{
 		{
 			true,
 			true,
-			&FingerprintOutput{
+			&out.FingerprintOutput{
 				Introspection: true,
 				Url:           url,
 				Type:          _type,
@@ -54,7 +61,7 @@ func TestFingerprintUrl(t *testing.T) {
 		{
 			true,
 			false,
-			&FingerprintOutput{
+			&out.FingerprintOutput{
 				Introspection: false,
 				Url:           url,
 				Type:          _type,
@@ -65,7 +72,7 @@ func TestFingerprintUrl(t *testing.T) {
 		{
 			true,
 			false,
-			&FingerprintOutput{
+			&out.FingerprintOutput{
 				Introspection: false,
 				Url:           url,
 				Type:          _type,

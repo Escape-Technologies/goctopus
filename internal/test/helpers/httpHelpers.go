@@ -1,10 +1,12 @@
 package helpers
 
-import "github.com/valyala/fasthttp"
+import "github.com/Escape-Technologies/goctopus/internal/http"
 
-func MockHttpResponse(statusCode int, body string) *fasthttp.Response {
-	resp := &fasthttp.Response{}
-	resp.SetStatusCode(statusCode)
-	resp.AppendBody([]byte(body))
+func MockHttpResponse(statusCode int, body string) *http.Response {
+	bodyBytes := []byte(body)
+	resp := &http.Response{
+		Body:       &bodyBytes,
+		StatusCode: statusCode,
+	}
 	return resp
 }
