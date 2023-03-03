@@ -8,6 +8,15 @@ goctopus:
 test:
 	go test ./...
 
+build:
+	go build -o goctopus cmd/goctopus/goctopus.go
+
+# Change this to github when going public
+release-docker:
+	docker build -t registry.gitlab.com/escape.tech/misc/goctopus .
+	docker push registry.gitlab.com/escape.tech/misc/goctopus
+
+# LEGACY
 mock-latency: stop-mock
 	$(mock) ./test/timeout/mock.json $(mock-p-name)
 	
