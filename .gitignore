@@ -6,3 +6,6 @@ input.txt
 testers
 !test/**/input.txt
 !internal/utils/assets/wordlist.txt
+
+# ignore builds
+goctopus

@@ -50,6 +50,7 @@ func RunFromFile(input *os.File) {
 			log.Error(err)
 			// os.Exit(1)
 		}
+		// @todo make this non blocking (goroutine)
 		http.SendToWebhook(jsonOutput)
 		outputFile.Write(jsonOutput)
 		outputFile.Write([]byte("\n"))
