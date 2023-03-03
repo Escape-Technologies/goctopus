@@ -2,6 +2,7 @@ package http
 
 import (
 	"crypto/tls"
+	"sync"
 	"time"
 
 	"github.com/Escape-Technologies/goctopus/internal/config"
@@ -63,7 +64,8 @@ func (c *client) Post(url string, body []byte) (*Response, error) {
 	return response, nil
 }
 
-func SendToWebhook(body []byte) error {
+func SendToWebhook(body []byte, wg *sync.WaitGroup) error {
+	defer wg.Done()
 	log.Debugf("webhook url: %v", config.Conf.WebhookUrl)
 
 	if config.Conf.WebhookUrl == "" {

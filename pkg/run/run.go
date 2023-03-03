@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"os"
+	"sync"
 
 	"github.com/Escape-Technologies/goctopus/internal/config"
 	"github.com/Escape-Technologies/goctopus/internal/http"
@@ -43,6 +44,7 @@ func RunFromFile(input *os.File) {
 	go workers.Orchestrator(inputBuffer, maxWorkers, output, count)
 
 	// -- OUTPUT --
+	var wg sync.WaitGroup
 	for output := range output {
 		jsonOutput, err := json.Marshal(output)
 		log.Infof("Found: %+v\n", string(jsonOutput))
@@ -50,11 +52,12 @@ func RunFromFile(input *os.File) {
 			log.Error(err)
 			// os.Exit(1)
 		}
-		// @todo make this non blocking (goroutine)
-		http.SendToWebhook(jsonOutput)
+		wg.Add(1)
+		go http.SendToWebhook(jsonOutput, &wg)
 		outputFile.Write(jsonOutput)
 		outputFile.Write([]byte("\n"))
 	}
+	wg.Wait()
 }
 
 //@todo run from list of domains
