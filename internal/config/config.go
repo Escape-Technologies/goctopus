@@ -53,20 +53,27 @@ func ParseFlags() {
 func ValidateConfig(conf *Config) {
 	if conf.MaxWorkers < 1 {
 		log.Error("[Invalid args] Max workers must be greater than 0")
+		configError()
 	}
 
 	if conf.Timeout < 1 {
 		log.Error("[Invalid args] Timeout must be greater than 0")
+		configError()
 	}
 
 	if !conf.Introspection && conf.FieldSuggestion {
 		log.Error("[Invalid args] Introspection has to be enabled to use field suggestion fingerprinting")
+		configError()
 	}
 
 	if conf.InputFile == "" {
 		log.Error("[Invalid args] Please specify an input file")
+		configError()
 	}
 
+}
+
+func configError() {
 	flag.PrintDefaults()
 	os.Exit(1)
 }
