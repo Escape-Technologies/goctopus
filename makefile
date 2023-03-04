@@ -12,9 +12,9 @@ build:
 	go build -o goctopus cmd/goctopus/goctopus.go
 
 # Change this to dockerhub when going public
+# make this run in a ci
 release-docker:
-	docker build -t registry.gitlab.com/escape.tech/misc/goctopus .
-	docker push registry.gitlab.com/escape.tech/misc/goctopus
+	docker buildx build --platform linux/amd64,linux/arm64 --push -t registry.gitlab.com/escape.tech/misc/goctopus .
 
 # LEGACY
 mock-latency: stop-mock
