@@ -15,16 +15,16 @@ type mockedFingerprinter struct {
 	fieldSuggestion bool
 }
 
-func (m *mockedFingerprinter) Graphql() bool {
-	return m.graphql
+func (m *mockedFingerprinter) Graphql() (bool, error) {
+	return m.graphql, nil
 }
 
-func (m *mockedFingerprinter) Introspection() bool {
-	return m.introspection
+func (m *mockedFingerprinter) Introspection() (bool, error) {
+	return m.introspection, nil
 }
 
-func (m *mockedFingerprinter) FieldSuggestion() bool {
-	return m.fieldSuggestion
+func (m *mockedFingerprinter) FieldSuggestion() (bool, error) {
+	return m.fieldSuggestion, nil
 }
 
 func makeMockedFingerprinter(graphql bool, introspection bool) *mockedFingerprinter {

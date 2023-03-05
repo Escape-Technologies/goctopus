@@ -12,15 +12,15 @@ var (
 	IntrospectionPayload = []byte(`{"query": "query { __schema { queryType { name } } }"}`)
 )
 
-func (fp *fingerprinter) Introspection() bool {
+func (fp *fingerprinter) Introspection() (bool, error) {
 	body := &IntrospectionPayload
 	res, err := fp.Client.Post(fp.url, *body)
-	log.Debugf("Response from %v: %v", fp.url, string(*res.Body))
 	if err != nil {
 		log.Debugf("Error from %v: %v", fp.url, err)
-		return false
+		return false, err
 	}
-	return IsValidIntrospectionResponse(res)
+	log.Debugf("Response from %v: %v", fp.url, res.StatusCode)
+	return IsValidIntrospectionResponse(res), nil
 }
 
 func IsValidIntrospectionResponse(resp *http.Response) bool {

@@ -26,6 +26,11 @@ var (
 
 func init() {
 	fastHttpClient = &fasthttp.Client{
+		MaxConnsPerHost: 1,
+		// MaxIdleConnDuration: time.Second * time.Duration(config.Conf.Timeout),
+		// MaxConnDuration:     time.Second * time.Duration(config.Conf.Timeout),
+		// Might need to implement this
+		// MaxResponseBodySize: 1024 * 256,
 		TLSConfig: &tls.Config{
 			InsecureSkipVerify: true,
 		},
@@ -50,10 +55,8 @@ func (c *client) Post(url string, body []byte) (*Response, error) {
 	log.Debug("Request sent to: ", url)
 	err := fastHttpClient.DoTimeout(req, resp, time.Second*time.Duration(config.Conf.Timeout))
 	if err != nil {
-		log.Debugf("Error from %v: %v", url, err)
 		return nil, err
 	}
-	log.Debugf("Recived status code %v: %v", resp.StatusCode(), string(resp.Body()))
 	// The response has to be copied because it will be released after the function returns
 	respBody := make([]byte, len(resp.Body()))
 	copy(respBody, resp.Body())

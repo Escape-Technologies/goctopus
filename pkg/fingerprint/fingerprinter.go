@@ -5,9 +5,9 @@ import (
 )
 
 type Fingerprinter interface {
-	Graphql() bool
-	Introspection() bool
-	FieldSuggestion() bool
+	Graphql() (bool, error)
+	Introspection() (bool, error)
+	FieldSuggestion() (bool, error)
 }
 
 type fingerprinter struct {

@@ -12,15 +12,15 @@ var (
 	GraphqlPayload = []byte(`{"query":"{__typename}"}`)
 )
 
-func (fp *fingerprinter) Graphql() bool {
+func (fp *fingerprinter) Graphql() (bool, error) {
 	body := &GraphqlPayload
 	res, err := fp.Client.Post(fp.url, *body)
 	if err != nil {
 		log.Debugf("Error from %v: %v", fp.url, err)
-		return false
+		return false, err
 	}
-	log.Debugf("Response from %v: %v", fp.url, string(*res.Body))
-	return IsValidGraphqlResponse(res)
+	log.Debugf("Response from %v: %v", fp.url, res.StatusCode)
+	return IsValidGraphqlResponse(res), nil
 }
 
 func IsValidGraphqlResponse(resp *http.Response) bool {

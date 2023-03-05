@@ -54,18 +54,18 @@ func makePayload(word string) []byte {
 	return []byte(`{"query": "{` + word + `}"}`)
 }
 
-func (fp *fingerprinter) FieldSuggestion() bool {
+func (fp *fingerprinter) FieldSuggestion() (bool, error) {
 	for _, word := range *utils.Wordlist {
 		body := makePayload(word)
 		res, err := fp.Client.Post(fp.url, body)
-		log.Debugf("Response from %v: %v", fp.url, string(*res.Body))
+		log.Debugf("Response from %v: %v", fp.url, res.StatusCode)
 		if err != nil {
 			log.Debugf("Error from %v: %v", fp.url, err)
-			return false
+			return false, err
 		}
 		if IsSuggestionResponse(res) {
-			return true
+			return true, nil
 		}
 	}
-	return false
+	return false, nil
 }

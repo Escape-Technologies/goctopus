@@ -7,20 +7,32 @@ import (
 	out "github.com/Escape-Technologies/goctopus/pkg/output"
 )
 
+var ErrNotGraphql = errors.New("no graphql endpoint found on this route")
+
 func FingerprintUrl(url string, fp Fingerprinter, config *config.Config) (*out.FingerprintOutput, error) {
 	out := &out.FingerprintOutput{
 		Url:  url,
 		Type: out.ResultIsGraphql,
 	}
-	isGraphql := fp.Graphql()
+	isGraphql, err := fp.Graphql()
+	if err != nil {
+		return nil, err
+	}
+
 	if !isGraphql {
-		return nil, errors.New("no graphql endpoint found on this route")
+		return nil, ErrNotGraphql
 	}
 	if isGraphql && config.Introspection {
-		out.Introspection = fp.Introspection()
+		out.Introspection, err = fp.Introspection()
+		if err != nil {
+			return nil, err
+		}
 	}
 	if out.Introspection && config.FieldSuggestion {
-		out.FieldSuggestion = fp.FieldSuggestion()
+		out.FieldSuggestion, err = fp.FieldSuggestion()
+		if err != nil {
+			return nil, err
+		}
 	}
 	return out, nil
 }

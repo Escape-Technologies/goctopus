@@ -45,8 +45,8 @@ func RunFromFile(input *os.File) {
 
 	// -- OUTPUT --
 	var wg sync.WaitGroup
-	for output := range output {
-		jsonOutput, err := json.Marshal(output)
+	for out := range output {
+		jsonOutput, err := json.Marshal(out)
 		log.Infof("Found: %+v\n", string(jsonOutput))
 		if err != nil {
 			log.Error(err)
