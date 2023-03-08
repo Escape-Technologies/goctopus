@@ -26,7 +26,7 @@ func worker(domains chan string, output chan *out.FingerprintOutput, workerId in
 
 func Orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, output chan *out.FingerprintOutput, count int) {
 
-	domains := make(chan string)
+	domains := make(chan string, maxWorkers)
 	wg := sync.WaitGroup{}
 	wg.Add(maxWorkers)
 

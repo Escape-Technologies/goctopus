@@ -14,6 +14,7 @@ var (
 
 func (fp *fingerprinter) Graphql() (bool, error) {
 	body := &GraphqlPayload
+	http.AvoidNetworkCongestion()
 	res, err := fp.Client.Post(fp.url, *body)
 	if err != nil {
 		log.Debugf("Error from %v: %v", fp.url, err)

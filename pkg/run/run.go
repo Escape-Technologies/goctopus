@@ -43,9 +43,11 @@ func RunFromFile(input *os.File) {
 	output := make(chan *out.FingerprintOutput, maxWorkers)
 	go workers.Orchestrator(inputBuffer, maxWorkers, output, count)
 
+	foundCount := 0
 	// -- OUTPUT --
 	var wg sync.WaitGroup
 	for out := range output {
+		foundCount++
 		jsonOutput, err := json.Marshal(out)
 		log.Infof("Found: %+v\n", string(jsonOutput))
 		if err != nil {
@@ -58,6 +60,7 @@ func RunFromFile(input *os.File) {
 		outputFile.Write([]byte("\n"))
 	}
 	wg.Wait()
+	log.Infof("Done. Found %d graphql endpoints", foundCount)
 }
 
 //@todo run from list of domains

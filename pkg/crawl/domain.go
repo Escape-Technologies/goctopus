@@ -55,7 +55,7 @@ func CrawlSubDomain(domain string) (*out.FingerprintOutput, error) {
 				return nil, err
 			}
 
-			// Unknown error, panic
+			// Unknown error
 			log.Warnf("Unhandled error on %s, skipping. %v", domain, err)
 			return nil, err
 		}
