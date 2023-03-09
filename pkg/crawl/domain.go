@@ -1,68 +1,36 @@
 package crawl
 
 import (
-	"errors"
-	"fmt"
-	"net"
+	"io"
 
 	"github.com/Escape-Technologies/goctopus/internal/config"
-	"github.com/Escape-Technologies/goctopus/pkg/fingerprint"
-	out "github.com/Escape-Technologies/goctopus/pkg/output"
-	log "github.com/sirupsen/logrus"
-
-	"github.com/valyala/fasthttp"
+	"github.com/projectdiscovery/subfinder/v2/pkg/resolve"
+	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 )
 
-func CrawlSubDomain(domain string) (*out.FingerprintOutput, error) {
-	routes := []string{
-		"",
-		"graphql",
-		"api/graphql",
-		"api/v2/graphql",
-		"api/v1/graphql",
-		"appsync",
-		"altair",
-		"graph",
-		"graphql/v2",
-		"graphql/v1",
-		"/api",
+func CrawlDomain(domain string, subDomains chan string, enumerationEnabled bool) (err error) {
+	subDomains <- domain
+
+	if !enumerationEnabled {
+		return nil
 	}
-	// @todo refactor this
-	for _, route := range routes {
-		url := fmt.Sprintf("https://%s/%s", domain, route)
-		fp := fingerprint.NewFingerprinter(url, domain)
-		output, err := fingerprint.FingerprintUrl(url, fp, config.Conf)
 
-		// At the first timeout, drop the domain
-		// @todo number of tries in the config
-		if err != nil {
-			// If the domain is not a graphql endpoint, continue
-			if errors.Is(err, fingerprint.ErrNotGraphql) {
-				continue
-			}
+	runnerInstance, _ := runner.NewRunner(&runner.Options{
+		Threads:            10,                       // Thread controls the number of threads to use for active enumerations
+		Timeout:            config.Conf.Timeout,      // Timeout is the seconds to wait for sources to respond
+		MaxEnumerationTime: 5,                        // MaxEnumerationTime is the maximum amount of time in mins to wait for enumeration
+		Resolvers:          resolve.DefaultResolvers, // Use the default list of resolvers by marshaling it to the config
+		ResultCallback: func(s *resolve.HostEntry) { // Callback function to execute for available host
+			subDomains <- s.Host
+		},
+		Silent: true,
+	})
 
-			// At the first timeout, drop the domain
-			// @todo number of tries in the config
-			if errors.Is(err, fasthttp.ErrTimeout) {
-				log.Infof("Timeout on %s, skipping.", domain)
-				return nil, err
-			}
-
-			// If the host can't be resolved, drop the domain
-			var dnsErr *net.DNSError
-			if errors.As(err, &dnsErr) {
-				log.Infof("DNSError on %s, skipping.", domain)
-				return nil, err
-			}
-
-			// Unknown error
-			log.Warnf("Unhandled error on %s, skipping. %v", domain, err)
-			return nil, err
-		}
-		if err == nil {
-			output.Domain = domain
-			return output, nil
-		}
+	err = runnerInstance.EnumerateSingleDomain(domain, []io.Writer{})
+	close(subDomains)
+	if err != nil {
+		return err
 	}
-	return nil, errors.New("no graphql endpoint found")
+
+	return nil
 }

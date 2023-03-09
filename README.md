@@ -1,9 +1,3 @@
 # goctopus
 
-Blazing fast graphql fingerprinting.
-
-## Notes
-
-`testers` directory should be removed before release.
-
-Mockoon is usefull to mock the endpoints and test. There are some configs in the `test/mocks` directory.
+Blazing fast graphql fingerprinting toolbox.

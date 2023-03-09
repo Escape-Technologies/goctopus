@@ -10,11 +10,12 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func worker(domains chan string, output chan *out.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
+func worker(subDomains chan string, output chan *out.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	log.Debugf("Worker %d instantiated\n", workerId)
-	for domain := range domains {
+	for domain := range subDomains {
 		log.Debugf("Worker %d started on: %v\n", workerId, domain)
+		// res, err := crawl.CrawlSubDomain(domain)
 		res, err := crawl.CrawlSubDomain(domain)
 		if err == nil {
 			log.Debugf("Worker %d found endpoint: %v\n", workerId, res)
@@ -26,19 +27,21 @@ func worker(domains chan string, output chan *out.FingerprintOutput, workerId in
 
 func Orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, output chan *out.FingerprintOutput, count int) {
 
-	domains := make(chan string, maxWorkers)
+	domains := make(chan string, 1)
+	subDomains := make(chan string, maxWorkers)
 	wg := sync.WaitGroup{}
 	wg.Add(maxWorkers)
 
 	for i := 0; i < maxWorkers; i++ {
-		go worker(domains, output, i, &wg)
+		go worker(subDomains, output, i, &wg)
 	}
 
 	i := 1
 	for inputBuffer.Scan() {
 		domain := inputBuffer.Text()
 		log.Infof("(%d/%d) Adding %v to the queue\n", i, count, domain)
-		domains <- domain
+		subDomains <- domain
+		crawl.CrawlDomain(domain, subDomains, true)
 		i++
 	}
 

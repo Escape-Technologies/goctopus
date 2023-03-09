@@ -25,7 +25,13 @@ type Config struct {
 
 func ParseFlags() {
 	config := Config{}
+	// -- INPUT --
 	flag.StringVar(&config.InputFile, "i", "", "Input file")
+	// @TODO
+	// flag.StringVar(&config.InputFile, "d", "", "Input domains (comma separated)")
+	// flag.StringVar(&config.InputFile, "u", "", "Input urls (comma separated)")
+
+	// -- CONFIG --
 	// @todo make output file optional ?
 	flag.StringVar(&config.OutputFile, "o", "output.jsonl", "Output file (json-lines format)")
 	flag.StringVar(&config.WebhookUrl, "webhook", "", "Webhook URL")

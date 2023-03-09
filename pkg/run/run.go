@@ -38,7 +38,9 @@ func RunFromFile(input *os.File) {
 	defer outputFile.Close()
 
 	// Limit the number of workers to the number of domains if the number of domains is less than the max workers
-	maxWorkers := utils.MinInt(count, config.Conf.MaxWorkers)
+	// maxWorkers := utils.MinInt(count, config.Conf.MaxWorkers)
+	// @todo: this is not pertinent with subdomain enumeration, see how to scale workers automatically
+	maxWorkers := config.Conf.MaxWorkers
 	log.Infof("Starting %d workers\n", maxWorkers)
 	output := make(chan *out.FingerprintOutput, maxWorkers)
 	go workers.Orchestrator(inputBuffer, maxWorkers, output, count)
