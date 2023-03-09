@@ -11,8 +11,6 @@ import (
 )
 
 func main() {
-	// -- PARAMS --
-	// @todo make config a singleton package: https://stackoverflow.com/questions/36528091/golang-sharing-configurations-between-packages
 	config.ParseFlags()
 	if !config.Conf.Silent {
 		utils.PrintASCII()

@@ -1,6 +1,6 @@
 # goctopus
 
-Blazing fast domain graphql fingerprinting.
+Blazing fast graphql fingerprinting.
 
 ## Notes
 

@@ -24,14 +24,13 @@ var (
 	fastHttpClient *fasthttp.Client
 )
 
-func init() {
+func initClient() {
 	fastHttpClient = &fasthttp.Client{
-		MaxConnsPerHost: 1,
-		// MaxIdleConnDuration: time.Second * time.Duration(config.Conf.Timeout),
-		// MaxConnDuration:     time.Second * time.Duration(config.Conf.Timeout),
-
-		// Might need to implement this
-		// MaxResponseBodySize: 1024 * 256,
+		MaxConnsPerHost:     1,
+		ReadTimeout:         time.Second * time.Duration(config.Conf.Timeout),
+		WriteTimeout:        time.Second * time.Duration(config.Conf.Timeout),
+		MaxIdleConnDuration: time.Second * time.Duration(config.Conf.Timeout),
+		MaxConnDuration:     time.Second * time.Duration(config.Conf.Timeout),
 		TLSConfig: &tls.Config{
 			InsecureSkipVerify: true,
 		},
@@ -44,6 +43,9 @@ type Response struct {
 }
 
 func (c *client) Post(url string, body []byte) (*Response, error) {
+	if fastHttpClient == nil {
+		initClient()
+	}
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod("POST")
 	req.Header.SetContentType("application/json")
@@ -69,11 +71,13 @@ func (c *client) Post(url string, body []byte) (*Response, error) {
 }
 
 func SendToWebhook(body []byte, wg *sync.WaitGroup) error {
+	if fastHttpClient == nil {
+		initClient()
+	}
 	defer wg.Done()
 	if config.Conf.WebhookUrl == "" {
 		return nil
 	}
-	AvoidNetworkCongestion()
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod("POST")
 	req.Header.SetContentType("application/json")
@@ -86,59 +90,4 @@ func SendToWebhook(body []byte, wg *sync.WaitGroup) error {
 		log.Debugf("Error from %v: %v", config.Conf.WebhookUrl, err)
 	}
 	return err
-}
-
-// func AvoidNetworkCongestion() {
-// 	var (
-// 		url          = "http://8.8.8.8"
-// 		maxBackoff   = 10
-// 		backoffCount = 0
-// 		backoffTime  = 500 * time.Millisecond
-// 	)
-// 	for {
-// 		req, err := http.NewRequest("HEAD", url, nil)
-// 		if err != nil {
-// 			panic(err)
-// 		}
-// 		resp, err := http.DefaultTransport.RoundTrip(req)
-// 		log.Infof("Network congestion avoidance: %v", resp.StatusCode)
-// 		if err != nil {
-// 			backoff(&backoffCount, maxBackoff, backoffTime)
-// 		}
-// 		if resp.StatusCode == 200 {
-// 			break
-// 		}
-// 		backoff(&backoffCount, maxBackoff, backoffTime)
-// 	}
-// }
-
-// Dialing doest seem to work
-// func AvoidNetworkCongestion() {
-// 	var (
-// 		addr         = "google.com:80"
-// 		maxBackoff   = 10
-// 		backoffCount = 0
-// 		backoffTime  = 500 * time.Millisecond
-// 	)
-// 	for {
-// 		con, err := net.DialTimeout("tcp", addr, time.Second*time.Duration(config.Conf.Timeout))
-// 		if err != nil {
-// 			backoff(&backoffCount, maxBackoff, backoffTime)
-// 		}
-// 		if con != nil {
-// 			con.Close()
-// 			break
-// 		}
-// 	}
-// }
-
-func AvoidNetworkCongestion() {}
-
-func backoff(backoffCount *int, maxBackoff int, backoffTime time.Duration) {
-	log.Warnf("Backoff %v", *backoffCount)
-	if *backoffCount == maxBackoff {
-		panic("Max backoff reached")
-	}
-	*backoffCount++
-	time.Sleep(backoffTime * time.Duration(*backoffCount))
 }

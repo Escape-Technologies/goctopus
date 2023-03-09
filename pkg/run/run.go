@@ -15,7 +15,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// @todo refactor this to decouple from the filesystem
+// @todo refactor this to decouple from the filesystem and cli
 // make it a run function that takes a list of domains
 // maybe a second function that takes a channel of domains
 // the file io should be in internal/io
@@ -52,7 +52,6 @@ func RunFromFile(input *os.File) {
 		log.Infof("Found: %+v\n", string(jsonOutput))
 		if err != nil {
 			log.Error(err)
-			// os.Exit(1)
 		}
 		wg.Add(1)
 		go http.SendToWebhook(jsonOutput, &wg)
