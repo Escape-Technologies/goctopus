@@ -12,16 +12,16 @@ var (
 )
 
 type Config struct {
-	InputFile       string
-	OutputFile      string
-	MaxWorkers      int
-	Verbose         bool
-	Silent          bool
-	Timeout         int
-	Introspection   bool
-	FieldSuggestion bool
-	WebhookUrl      string
-	NoSubdomain     bool
+	InputFile            string
+	OutputFile           string
+	MaxWorkers           int
+	Verbose              bool
+	Silent               bool
+	Timeout              int
+	Introspection        bool
+	FieldSuggestion      bool
+	WebhookUrl           string
+	SubdomainEnumeration bool
 }
 
 func ParseFlags() {
@@ -42,7 +42,7 @@ func ParseFlags() {
 	flag.IntVar(&config.Timeout, "t", 30, "Request timeout (seconds)")
 	flag.BoolVar(&config.Introspection, "introspect", false, "Enable introspection fingerprinting")
 	flag.BoolVar(&config.FieldSuggestion, "suggest", false, "Enable fields suggestion fingerprinting.\nNeeds \"introspection\" to be enabled.")
-	flag.BoolVar(&config.NoSubdomain, "no-subdomain", false, "Disable subdomain enumeration")
+	flag.BoolVar(&config.SubdomainEnumeration, "subdomain", false, "Enable subdomain enumeration")
 
 	flag.Parse()
 

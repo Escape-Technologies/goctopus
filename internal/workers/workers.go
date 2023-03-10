@@ -16,55 +16,55 @@ import (
 // @todo refactor this
 func worker(addresses chan string, output chan *out.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
 	defer wg.Done()
-	log.Debugf("Worker %d instantiated\n", workerId)
+	log.Debugf("Worker %d instantiated", workerId)
 	for address := range addresses {
-		log.Debugf("Worker %d started on: %v\n", workerId, address)
+		log.Debugf("Worker %d started on: %v", workerId, address)
 		var (
 			res *out.FingerprintOutput
 			err error
 		)
 		if utils.IsUrl(address) {
-			log.Debugf("Worker %d found url: %v\n", workerId, address)
+			log.Debugf("Worker %d found url: %v", workerId, address)
 			fp := fingerprint.NewFingerprinter(address)
 			res, err = fingerprint.FingerprintUrl(address, fp, config.Conf)
 		} else {
 			res, err = crawl.CrawlSubDomain(address)
 		}
 		if err == nil {
-			log.Debugf("Worker %d found endpoint: %v\n", workerId, res)
+			log.Debugf("Worker %d found endpoint: %v", workerId, res)
 			output <- res
 		}
 	}
-	log.Debugf("Worker %d finished\n", workerId)
+	log.Debugf("Worker %d finished", workerId)
 }
 
 func Orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, output chan *out.FingerprintOutput, count int) {
 
 	// Adresses can be subdomains or urls
 	addresses := make(chan string, maxWorkers)
-	wg := sync.WaitGroup{}
-	wg.Add(maxWorkers)
+	workersWg := sync.WaitGroup{}
+	workersWg.Add(maxWorkers)
 
 	for i := 0; i < maxWorkers; i++ {
-		go worker(addresses, output, i, &wg)
+		go worker(addresses, output, i, &workersWg)
 	}
 
 	i := 1
 	for inputBuffer.Scan() {
 		domain := inputBuffer.Text()
-		log.Infof("(%d/%d) Adding %v to the queue\n", i, count, domain)
+		log.Infof("(%d/%d) Adding %v to the queue", i, count, domain)
 		// If the domain is a url, we don't need to crawl it
 		if utils.IsUrl(domain) {
 			addresses <- domain
 		} else {
-			crawl.CrawlDomain(domain, addresses, !config.Conf.NoSubdomain)
+			crawl.CrawlDomain(domain, addresses, config.Conf)
 		}
 		i++
 	}
 
 	close(addresses)
 	log.Debugf("Orchestrator finished, waiting for workers to finish...")
-	wg.Wait()
+	workersWg.Wait()
 	close(output)
 	log.Debugf("All workers finished")
 }

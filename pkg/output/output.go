@@ -32,7 +32,7 @@ func marshalOutput(o *FingerprintOutput, c *config.Config) ([]byte, error) {
 
 	// transform the output to a map
 	outputMap := make(map[string]interface{})
-	// this is need to avoid an infinite recursion
+	// this is need to avoid an infinite recursion when marshaling the output
 	type alias FingerprintOutput
 	outputBytes, _ := json.Marshal((*alias)(o))
 	json.Unmarshal(outputBytes, &outputMap)
