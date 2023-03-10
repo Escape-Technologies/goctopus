@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 
 	"github.com/Escape-Technologies/goctopus/internal/config"
+	"github.com/Escape-Technologies/goctopus/internal/utils"
 )
 
 type FingerprintResult string
@@ -43,6 +44,11 @@ func marshalOutput(o *FingerprintOutput, c *config.Config) ([]byte, error) {
 
 	if !c.FieldSuggestion {
 		delete(outputMap, "field_suggestion")
+	}
+
+	// when scanning from an url, the domain is not set so we infer it from the url
+	if o.Domain == "" && o.Url != "" {
+		outputMap["domain"] = utils.DomainFromUrl(o.Url)
 	}
 
 	return json.Marshal(outputMap)

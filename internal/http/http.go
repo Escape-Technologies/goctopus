@@ -26,7 +26,7 @@ var (
 
 func initClient() {
 	fastHttpClient = &fasthttp.Client{
-		MaxConnsPerHost:     1,
+		// MaxConnsPerHost:     1,
 		ReadTimeout:         time.Second * time.Duration(config.Conf.Timeout),
 		WriteTimeout:        time.Second * time.Duration(config.Conf.Timeout),
 		MaxIdleConnDuration: time.Second * time.Duration(config.Conf.Timeout),

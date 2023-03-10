@@ -27,10 +27,5 @@ func CrawlDomain(domain string, subDomains chan string, enumerationEnabled bool)
 	})
 
 	err = runnerInstance.EnumerateSingleDomain(domain, []io.Writer{})
-	close(subDomains)
-	if err != nil {
-		return err
-	}
-
-	return nil
+	return err
 }

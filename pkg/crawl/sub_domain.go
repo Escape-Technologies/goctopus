@@ -29,7 +29,7 @@ func CrawlSubDomain(domain string) (*out.FingerprintOutput, error) {
 	// @todo refactor this
 	for _, route := range routes {
 		url := fmt.Sprintf("https://%s/%s", domain, route)
-		fp := fingerprint.NewFingerprinter(url, domain)
+		fp := fingerprint.NewFingerprinter(url)
 		output, err := fingerprint.FingerprintUrl(url, fp, config.Conf)
 
 		// At the first timeout, drop the domain

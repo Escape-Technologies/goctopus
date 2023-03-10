@@ -12,15 +12,13 @@ type Fingerprinter interface {
 
 type fingerprinter struct {
 	url    string
-	domain string
 	Client http.Client
 }
 
-func NewFingerprinter(url string, domain string) *fingerprinter {
+func NewFingerprinter(url string) *fingerprinter {
 	client := http.NewClient()
 	return &fingerprinter{
 		url:    url,
-		domain: domain,
 		Client: client,
 	}
 }

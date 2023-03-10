@@ -5,6 +5,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"net/url"
 	"os"
 )
 
@@ -35,6 +36,16 @@ func CountLines(f *os.File) (int, error) {
 			return count, err
 		}
 	}
+}
+
+func IsUrl(s string) bool {
+	u, err := url.Parse(s)
+	return err == nil && u.Scheme != "" && u.Host != ""
+}
+
+func DomainFromUrl(s string) string {
+	u, _ := url.Parse(s)
+	return u.Host
 }
 
 func PrintASCII() {

@@ -21,6 +21,7 @@ type Config struct {
 	Introspection   bool
 	FieldSuggestion bool
 	WebhookUrl      string
+	NoSubdomain     bool
 }
 
 func ParseFlags() {
@@ -41,6 +42,7 @@ func ParseFlags() {
 	flag.IntVar(&config.Timeout, "t", 30, "Request timeout (seconds)")
 	flag.BoolVar(&config.Introspection, "introspect", false, "Enable introspection fingerprinting")
 	flag.BoolVar(&config.FieldSuggestion, "suggest", false, "Enable fields suggestion fingerprinting.\nNeeds \"introspection\" to be enabled.")
+	flag.BoolVar(&config.NoSubdomain, "no-subdomain", false, "Disable subdomain enumeration")
 
 	flag.Parse()
 
