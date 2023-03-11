@@ -1,0 +1,27 @@
+name: 🎉 Release Binary
+
+on:
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+
+jobs:
+  goreleaser:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.20.x
+
+      - uses: goreleaser/goreleaser-action@v4
+        with:
+          args: "release --clean"
+          version: latest
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"

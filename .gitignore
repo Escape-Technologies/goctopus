@@ -9,3 +9,6 @@ testers
 
 # ignore builds
 goctopus
+
+dist/
+.env
