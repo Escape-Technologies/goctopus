@@ -52,7 +52,7 @@ func Orchestrator(inputBuffer *bufio.Scanner, maxWorkers int, output chan *out.F
 	i := 1
 	for inputBuffer.Scan() {
 		domain := inputBuffer.Text()
-		log.Infof("(%d/%d) Adding %v to the queue", i, count, domain)
+		log.Debugf("(%d/%d) Adding %v to the queue", i, count, domain)
 		// If the domain is a url, we don't need to crawl it
 		if utils.IsUrl(domain) {
 			addresses <- domain
