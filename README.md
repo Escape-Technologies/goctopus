@@ -46,7 +46,7 @@ goctopus -i input.txt -o output.jsonl
 Using docker:
 
 ```BASH
-docker run --rm -it -v $(pwd):/data escape/goctopus -i /data/input.txt -o /data/output.jsonl
+docker run --rm -it -v $(pwd):/data escapetech/goctopus:main -i /data/input.txt -o /data/output.jsonl
 ```
 
 ## Main options & features
@@ -117,3 +117,4 @@ This is useful to bruteforce fields and/or types when introspection is disabled,
 - [ ] Improve performance further.
 - [ ] Resume from output file.
 - [ ] Custom ascii art.
+- [ ] Fix docker tag.
