@@ -53,7 +53,7 @@ docker run --rm -it -v $(pwd):/data escape/goctopus -i /data/input.txt -o /data/
 
 ### Input
 
-For now goctopus only supports input from a file.  
+For now, goctopus only supports input from a file.  
 The file path should be specified using the `-i` flag.  
 The input file should contain a list of endpoints and/or urls separated by newlines.  
 This is an example of a valid input file:
@@ -67,21 +67,21 @@ https://example.com/api
 
 ### Introspection fingerprinting
 
-The `-introspect` flag enables the introspection fingerprinting.  
+The `-introspect` flag enables introspection fingerprinting.  
 If enabled, goctopus will detect if the introspection of graphql endpoints is enabled.
 
 ### Subdomain enumeration
 
-The `-subdomain` flag enables the subdomain enumeration.  
+The `-subdomain` flag enables subdomain enumeration.  
 If enabled, goctopus will try to find graphql endpoints on subdomains of the given domains.  
 The enumeration is done using [subfinder](https://github.com/projectdiscovery/subfinder).
 
 ### Field suggestion fingerprinting
 
-The `-suggest` flag enables the field suggestion fingerprinting.  
+The `-suggest` flag enables field suggestion fingerprinting.  
 This option needs the introspection fingerprinting (`-introspect`) to be enabled.
 When enabled, goctopus will try to detect if the graphql endpoint has field suggestion enabled, if the introspection is closed.  
-This is usefull to bruteforce fields and/or types when introspection is disabled, with tools such as [ClairvoyaceNext](https://github.com/Escape-Technologies/ClairvoyanceNext).
+This is useful to bruteforce fields and/or types when introspection is disabled, with tools such as [ClairvoyaceNext](https://github.com/Escape-Technologies/ClairvoyanceNext).
 
 ## Aditionnal options
 
@@ -115,3 +115,5 @@ This is usefull to bruteforce fields and/or types when introspection is disabled
 - [ ] Better flags.
 - [ ] Direct cli input.
 - [ ] Improve performance further.
+- [ ] Resume from output file.
+- [ ] Custom ascii art.
