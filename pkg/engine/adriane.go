@@ -1,7 +1,7 @@
 package engine
 
 var Adriane = &engine{
-	Name: "adriane",
+	Name: "Adriane",
 	Imprints: []imprint{
 		{
 			Query:   "",

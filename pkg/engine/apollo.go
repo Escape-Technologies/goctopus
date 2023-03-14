@@ -1,7 +1,7 @@
 package engine
 
 var Apollo = &engine{
-	Name: "apollo",
+	Name: "Apollo",
 	Imprints: []imprint{
 		{
 			Query: "query @deprecated { __typename }",
