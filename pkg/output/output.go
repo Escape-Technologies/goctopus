@@ -22,6 +22,7 @@ type FingerprintOutput struct {
 	SchemaStatus  SchemaStatus      `json:"schema_status"`
 	Source        string            `json:"source"`   // the original address used to fingerprint the endpoint
 	Metadata      map[string]string `json:"metadata"` // optional metadata
+	Engine        string            `json:"engine"`
 }
 
 func (o *FingerprintOutput) MarshalJSON() ([]byte, error) {
