@@ -14,15 +14,17 @@ import (
 
 type Client interface {
 	Post(url string, body []byte) (*Response, error)
+	DeleteUrlCache(url string)
 }
 
 type client struct {
-	responsesMap map[string]*Response
+	// url -> sha256(body) -> response
+	cache map[string]map[string]*Response
 }
 
 func NewClient() Client {
 	return &client{
-		responsesMap: make(map[string]*Response),
+		cache: make(map[string]map[string]*Response),
 	}
 }
 
@@ -52,8 +54,8 @@ func (c *client) Post(url string, body []byte) (*Response, error) {
 	if fastHttpClient == nil {
 		initClient()
 	}
-	sha := sha256.Sum256(append(body, []byte(url)...))
-	if resp, ok := c.responsesMap[string(sha[:])]; ok {
+	sha := sha256.Sum256(body)
+	if resp := c.cacheLookup(url, sha); resp != nil {
 		return resp, nil
 	}
 	req := fasthttp.AcquireRequest()
@@ -77,8 +79,30 @@ func (c *client) Post(url string, body []byte) (*Response, error) {
 		StatusCode: resp.StatusCode(),
 		Body:       &respBody,
 	}
-	c.responsesMap[string(sha[:])] = response
+	c.cacheResponse(url, sha, response)
 	return response, nil
+}
+
+func (c *client) DeleteUrlCache(url string) {
+	delete(c.cache, url)
+}
+
+func (c *client) cacheLookup(url string, bodySha [32]byte) *Response {
+	if _, ok := c.cache[url]; !ok {
+		c.cache[url] = make(map[string]*Response)
+		return nil
+	}
+	if resp, ok := c.cache[url][string(bodySha[:])]; ok {
+		return resp
+	}
+	return nil
+}
+
+func (c *client) cacheResponse(url string, bodySha [32]byte, resp *Response) {
+	if _, ok := c.cache[url]; !ok {
+		c.cache[url] = make(map[string]*Response)
+	}
+	c.cache[url][string(bodySha[:])] = resp
 }
 
 func SendToWebhook(body []byte, wg *sync.WaitGroup) error {
