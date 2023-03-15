@@ -4,7 +4,7 @@ Blazing fast graphql fingerprinting toolbox.
 
 > ⚠️ Goctopus is still in very early development. Breaking changes are expected.
 
-`````
+`````TEXT
 
                     .-'   `'.
                    /         \
@@ -30,8 +30,8 @@ Blazing fast graphql fingerprinting toolbox.
  \__, |\___/ \___|\__\___/| .__/ \__,_|___/
  |___/                    |_|
 INFO[0000] Starting 100 workers
-INFO[0000] Found: {"domain":"gontoz.escape.tech","type":"IS_GRAPHQL","url":"https://gontoz.escape.tech"}
-INFO[0002] Done. Found 1 graphql endpoints
+INFO[0000] Found: {"domain":"gontoz.escape.tech","type":"OPEN_GRAPHQL","url":"https://gontoz.escape.tech"}
+INFO[0002] Done. Found 1 graphql endpoint
 `````
 
 ## Usage
@@ -53,12 +53,12 @@ docker run --rm -it -v $(pwd):/data escapetech/goctopus:main -i /data/input.txt 
 
 ### Input
 
-For now, goctopus only supports input from a file.  
-The file path should be specified using the `-i` flag.  
-The input file should contain a list of endpoints and/or urls separated by newlines.  
+For now, goctopus only supports input from a file.
+The file path should be specified using the `-i` flag.
+The input file should contain a list of endpoints and/or urls separated by newlines.
 This is an example of a valid input file:
 
-```
+```TEXT
 example.com
 https://example.com/graphql
 escape.tech
@@ -67,21 +67,40 @@ https://example.com/api
 
 ### Introspection fingerprinting
 
-The `-introspect` flag enables introspection fingerprinting.  
+The `-introspect` flag enables introspection fingerprinting.
 If enabled, goctopus will detect if the introspection of graphql endpoints is enabled.
 
 ### Subdomain enumeration
 
-The `-subdomain` flag enables subdomain enumeration.  
-If enabled, goctopus will try to find graphql endpoints on subdomains of the given domains.  
+The `-subdomain` flag enables subdomain enumeration.
+If enabled, goctopus will try to find graphql endpoints on subdomains of the given domains.
 The enumeration is done using [subfinder](https://github.com/projectdiscovery/subfinder).
 
 ### Field suggestion fingerprinting
 
-The `-suggest` flag enables field suggestion fingerprinting.  
+The `-suggest` flag enables field suggestion fingerprinting.
 This option needs the introspection fingerprinting (`-introspect`) to be enabled.
-When enabled, goctopus will try to detect if the graphql endpoint has field suggestion enabled, if the introspection is closed.  
+When enabled, goctopus will try to detect if the graphql endpoint has field suggestion enabled, if the introspection is closed.
 This is useful to bruteforce fields and/or types when introspection is disabled, with tools such as [ClairvoyaceNext](https://github.com/Escape-Technologies/ClairvoyanceNext).
+
+### Output
+
+The `-o` is used to specify the output file path. It defaults to `output.jsonl`.  
+The output file is in json-lines format.
+Each line corresponds to one found graphql endpoint and will contain at least the following fields:
+
+```JSON
+{
+  "domain": "example.com",
+  "type": "OPEN_GRAPHQL",
+  "url": "https://example.com/graphql"
+}
+```
+
+The `type` field can be one of the following:
+
+- `OPEN_GRAPHQL`: The endpoint is a graphql endpoint.
+- `AUTHENTIFIED_GRAPHQL`: The endpoint is a graphql endpoint and requires authentication.
 
 ## Aditionnal options
 

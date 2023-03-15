@@ -10,26 +10,33 @@ import (
 )
 
 type mockedFingerprinter struct {
-	graphql         bool
-	introspection   bool
-	fieldSuggestion bool
+	openGraphql         bool
+	authentifiedGraphql bool
+	introspection       bool
+	fieldSuggestion     bool
 }
 
-func (m *mockedFingerprinter) Graphql() (bool, error) {
-	return m.graphql, nil
+func (m *mockedFingerprinter) OpenGraphql() (bool, error) {
+	return m.openGraphql, nil
 }
 
-func (m *mockedFingerprinter) Introspection() (bool, error) {
+func (m *mockedFingerprinter) AuthentifiedGraphql() (bool, error) {
+	return m.authentifiedGraphql, nil
+}
+
+func (m *mockedFingerprinter) IntrospectionOpen() (bool, error) {
 	return m.introspection, nil
 }
 
-func (m *mockedFingerprinter) FieldSuggestion() (bool, error) {
+func (m *mockedFingerprinter) FieldSuggestionEnabled() (bool, error) {
 	return m.fieldSuggestion, nil
 }
 
+func (m *mockedFingerprinter) Close() {}
+
 func makeMockedFingerprinter(graphql bool, introspection bool) *mockedFingerprinter {
 	return &mockedFingerprinter{
-		graphql:       graphql,
+		openGraphql:   graphql,
 		introspection: introspection,
 	}
 }
@@ -38,7 +45,7 @@ func makeMockedFingerprinter(graphql bool, introspection bool) *mockedFingerprin
 func TestFingerprintUrl(t *testing.T) {
 
 	url := "https://example.com/graphql"
-	_type := out.ResultIsGraphql
+	_type := out.ResultOpenGraphql
 
 	table := []struct {
 		graphql                    bool

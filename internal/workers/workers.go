@@ -27,6 +27,7 @@ func worker(addresses chan string, output chan *out.FingerprintOutput, workerId 
 			log.Debugf("Worker %d found url: %v", workerId, address)
 			fp := fingerprint.NewFingerprinter(address)
 			res, err = fingerprint.FingerprintUrl(address, fp, config.Conf)
+			fp.Close()
 		} else {
 			res, err = crawl.CrawlSubDomain(address)
 		}
