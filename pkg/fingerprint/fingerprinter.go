@@ -9,6 +9,7 @@ type Fingerprinter interface {
 	AuthentifiedGraphql() (bool, error)
 	IntrospectionOpen() (bool, error)
 	FieldSuggestionEnabled() (bool, error)
+	Close()
 }
 
 type fingerprinter struct {
@@ -22,4 +23,8 @@ func NewFingerprinter(url string) *fingerprinter {
 		url:    url,
 		Client: client,
 	}
+}
+
+func (fp *fingerprinter) Close() {
+	fp.Client.DeleteUrlCache(fp.url)
 }

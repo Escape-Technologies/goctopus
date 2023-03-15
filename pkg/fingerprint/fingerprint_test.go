@@ -32,6 +32,8 @@ func (m *mockedFingerprinter) FieldSuggestionEnabled() (bool, error) {
 	return m.fieldSuggestion, nil
 }
 
+func (m *mockedFingerprinter) Close() {}
+
 func makeMockedFingerprinter(graphql bool, introspection bool) *mockedFingerprinter {
 	return &mockedFingerprinter{
 		openGraphql:   graphql,
