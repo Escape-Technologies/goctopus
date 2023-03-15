@@ -21,13 +21,13 @@ func TestMarshallOutput(t *testing.T) {
 				Url:             url,
 				Introspection:   true,
 				FieldSuggestion: false,
-				Type:            ResultIsGraphql,
+				Type:            ResultOpenGraphql,
 			},
 			&config.Config{
 				Introspection:   true,
 				FieldSuggestion: false,
 			},
-			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultIsGraphql) + `","introspection":true}`,
+			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultOpenGraphql) + `","introspection":true}`,
 		},
 		{
 			&FingerprintOutput{
@@ -35,13 +35,13 @@ func TestMarshallOutput(t *testing.T) {
 				Url:             url,
 				Introspection:   false,
 				FieldSuggestion: true,
-				Type:            ResultIsGraphql,
+				Type:            ResultOpenGraphql,
 			},
 			&config.Config{
 				Introspection:   true,
 				FieldSuggestion: true,
 			},
-			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultIsGraphql) + `","field_suggestion":true, "introspection":false}`,
+			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultOpenGraphql) + `","field_suggestion":true, "introspection":false}`,
 		},
 		{
 			&FingerprintOutput{
@@ -49,13 +49,13 @@ func TestMarshallOutput(t *testing.T) {
 				Url:             url,
 				Introspection:   false,
 				FieldSuggestion: false,
-				Type:            ResultMaybeGraphql,
+				Type:            ResultAuthentifiedGraphql,
 			},
 			&config.Config{
 				Introspection:   false,
 				FieldSuggestion: false,
 			},
-			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultMaybeGraphql) + `"}`,
+			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultAuthentifiedGraphql) + `"}`,
 		},
 	}
 	for _, table := range tables {

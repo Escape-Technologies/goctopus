@@ -12,7 +12,7 @@ var (
 	IntrospectionPayload = []byte(`{"query": "query { __schema { queryType { name } } }"}`)
 )
 
-func (fp *fingerprinter) Introspection() (bool, error) {
+func (fp *fingerprinter) IntrospectionOpen() (bool, error) {
 	body := &IntrospectionPayload
 	res, err := fp.Client.Post(fp.url, *body)
 	if err != nil {

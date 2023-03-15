@@ -7,6 +7,76 @@ import (
 	"github.com/Escape-Technologies/goctopus/internal/test/helpers"
 )
 
+func TestIsAuthentifiedGraphqlResponse(t *testing.T) {
+	tables := []struct {
+		resp *http.Response
+		want bool
+	}{
+		{
+			helpers.MockHttpResponse(
+				200,
+				`{"data":{"__typename":"Query"}}`,
+			),
+			false,
+		},
+		{
+			helpers.MockHttpResponse(
+				200,
+				`{"errors":[]}`,
+			),
+			false,
+		},
+		{
+			helpers.MockHttpResponse(
+				200,
+				`{
+					"errors": [{
+						"message": "You must be logged in to perform this action",
+						"locations": [{
+							"line": 5,
+							"column": 2
+						}]
+					}]
+				}`,
+			),
+			true,
+		},
+		{
+			helpers.MockHttpResponse(
+				403,
+				`{
+					"errors": [{
+						"message": "Unauthorized"
+					}]
+				}`,
+			),
+			true,
+		},
+		{
+			helpers.MockHttpResponse(
+				200,
+				"Error",
+			),
+			false,
+		},
+		{
+			helpers.MockHttpResponse(
+				500,
+				"",
+			),
+			false,
+		},
+	}
+
+	for _, table := range tables {
+		got := isAuthentifiedGraphqlResponse(table.resp)
+		if got != table.want {
+			t.Errorf("isAuthentifiedGraphqlResponse() was incorrect for %+v, got: %v, want: %v.", table.resp, got, table.want)
+		}
+	}
+
+}
+
 func TestIsValidGraphqlResponse(t *testing.T) {
 	tables := []struct {
 		resp *http.Response
@@ -57,9 +127,9 @@ func TestIsValidGraphqlResponse(t *testing.T) {
 	}
 
 	for _, table := range tables {
-		got := IsValidGraphqlResponse(table.resp)
+		got := isOpenGraphqlResponse(table.resp)
 		if got != table.want {
-			t.Errorf("IsValidGraphqlResponse() was incorrect for %+v, got: %v, want: %v.", table.resp, got, table.want)
+			t.Errorf("isOpenGraphqlResponse() was incorrect for %+v, got: %v, want: %v.", table.resp, got, table.want)
 		}
 	}
 

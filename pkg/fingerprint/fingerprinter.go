@@ -5,9 +5,10 @@ import (
 )
 
 type Fingerprinter interface {
-	Graphql() (bool, error)
-	Introspection() (bool, error)
-	FieldSuggestion() (bool, error)
+	OpenGraphql() (bool, error)
+	AuthentifiedGraphql() (bool, error)
+	IntrospectionOpen() (bool, error)
+	FieldSuggestionEnabled() (bool, error)
 }
 
 type fingerprinter struct {
