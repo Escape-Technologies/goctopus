@@ -1,11 +1,10 @@
 name: 🐳 Release Docker
 
 on:
-  # @TODO: Put this back when the realease is not a draft anymore in .goreleaser.yaml
-  # workflow_run:
-  #   workflows: ["🎉 Release Binary"]
-  #   types:
-  #     - completed
+  workflow_run:
+    workflows: ["🎉 Release Binary"]
+    types:
+      - completed
   workflow_dispatch:
 
 jobs:

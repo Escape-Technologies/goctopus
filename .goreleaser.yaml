@@ -16,8 +16,8 @@ builds:
     main: ./cmd/{{ .ProjectName }}/{{ .ProjectName }}.go
 
 # will not auto-publish the release
-release:
-  draft: true
+# release:
+#   draft: true
 
 checksum:
   algorithm: sha256
