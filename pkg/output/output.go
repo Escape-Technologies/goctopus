@@ -43,7 +43,8 @@ func marshalOutput(o *FingerprintOutput, c *config.Config) ([]byte, error) {
 		delete(outputMap, "introspection")
 	}
 
-	if !c.FieldSuggestion {
+	// if introspection is enabled, remove the field_suggestion field
+	if !c.FieldSuggestion || o.Introspection {
 		delete(outputMap, "field_suggestion")
 	}
 

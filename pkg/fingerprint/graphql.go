@@ -2,7 +2,6 @@ package fingerprint
 
 import (
 	"encoding/json"
-	"fmt"
 
 	log "github.com/sirupsen/logrus"
 
@@ -92,8 +91,6 @@ func isAuthentifiedGraphqlResponse(resp *http.Response) bool {
 	if err := json.Unmarshal(*body, &result); err != nil {
 		return false
 	}
-
-	fmt.Printf("%+v", result)
 
 	if len(result.Errors) < 1 {
 		return false

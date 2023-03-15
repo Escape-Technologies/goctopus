@@ -5,6 +5,8 @@ import (
 	"sync"
 	"time"
 
+	"crypto/sha256"
+
 	"github.com/Escape-Technologies/goctopus/internal/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
@@ -14,10 +16,14 @@ type Client interface {
 	Post(url string, body []byte) (*Response, error)
 }
 
-type client struct{}
+type client struct {
+	responsesMap map[string]*Response
+}
 
 func NewClient() Client {
-	return &client{}
+	return &client{
+		responsesMap: make(map[string]*Response),
+	}
 }
 
 var (
@@ -46,6 +52,10 @@ func (c *client) Post(url string, body []byte) (*Response, error) {
 	if fastHttpClient == nil {
 		initClient()
 	}
+	sha := sha256.Sum256(append(body, []byte(url)...))
+	if resp, ok := c.responsesMap[string(sha[:])]; ok {
+		return resp, nil
+	}
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod("POST")
 	req.Header.SetContentType("application/json")
@@ -67,6 +77,7 @@ func (c *client) Post(url string, body []byte) (*Response, error) {
 		StatusCode: resp.StatusCode(),
 		Body:       &respBody,
 	}
+	c.responsesMap[string(sha[:])] = response
 	return response, nil
 }
 

@@ -40,7 +40,7 @@ func FingerprintUrl(url string, fp Fingerprinter, config *config.Config) (*outpu
 		}
 	}
 
-	if out.Introspection && config.FieldSuggestion {
+	if !out.Introspection && config.Introspection && config.FieldSuggestion {
 		out.FieldSuggestion, err = fp.FieldSuggestionEnabled()
 		if err != nil {
 			return nil, err
