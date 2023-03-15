@@ -16,7 +16,7 @@ var (
 )
 
 func init() {
-	SuggestionRegexp = regexp.MustCompile(`.*Did you mean.*`)
+	SuggestionRegexp = regexp.MustCompile(`(?i).*did you mean.*`)
 }
 
 func MatchFieldSuggestionRegex(message string) bool {
