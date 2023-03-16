@@ -16,12 +16,15 @@ func main() {
 		utils.PrintASCII()
 	}
 
-	input, err := os.Open(config.Get().InputFile)
-	if err != nil {
-		log.Error(err)
-		os.Exit(1)
+	if config.Get().InputFile != "" {
+		input, err := os.Open(config.Get().InputFile)
+		if err != nil {
+			log.Error(err)
+			os.Exit(1)
+		}
+		defer input.Close()
+		goctopus.FingerprintFromFile(input)
+	} else {
+		goctopus.FingerprintFromSlice(config.Get().Addresses)
 	}
-	defer input.Close()
-
-	goctopus.FingerprintFromFile(input)
 }

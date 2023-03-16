@@ -4,12 +4,15 @@ import (
 	"errors"
 	"flag"
 	"os"
+	"strings"
 
+	"github.com/Escape-Technologies/goctopus/internal/utils"
 	log "github.com/sirupsen/logrus"
 )
 
 type Config struct {
 	InputFile            string
+	Addresses            []string
 	OutputFile           string
 	MaxWorkers           int
 	Verbose              bool
@@ -32,14 +35,23 @@ func Get() *Config {
 	return c
 }
 
+func parseArgs() []string {
+	if flag.Arg(0) == "" {
+		log.Error("Invalid addresses argument")
+		utils.PrintUsage()
+		os.Exit(1)
+	}
+	input := flag.Arg(0)
+	return strings.Split(input, ",")
+}
+
 func LoadFromArgs() {
+	flag.Usage = utils.PrintUsage
 	config := Config{}
 	// -- INPUT --
-	flag.StringVar(&config.InputFile, "i", "", "Input file")
-	// @todo accept stdin args as input (addresses comma separated)
+	flag.StringVar(&config.InputFile, "f", "", "Input file")
 
 	// -- CONFIG --
-	// @todo make output file optional ?
 	flag.StringVar(&config.OutputFile, "o", "output.jsonl", "Output file (json-lines format)")
 	flag.StringVar(&config.WebhookUrl, "webhook", "", "Webhook URL")
 	flag.IntVar(&config.MaxWorkers, "w", 100, "Max workers")
@@ -51,6 +63,10 @@ func LoadFromArgs() {
 	flag.BoolVar(&config.SubdomainEnumeration, "subdomain", false, "Enable subdomain enumeration")
 
 	flag.Parse()
+
+	if config.InputFile == "" {
+		config.Addresses = parseArgs()
+	}
 
 	if config.Verbose {
 		log.SetLevel(log.DebugLevel)
@@ -82,8 +98,8 @@ func ValidateConfig(conf *Config) error {
 		return errors.New("[Invalid config] Introspection has to be enabled to use field suggestion fingerprinting")
 	}
 
-	if conf.InputFile == "" {
-		return errors.New("[Invalid config] Please specify an input file")
+	if conf.InputFile == "" && len(conf.Addresses) == 0 {
+		return errors.New("[Invalid config] Please specify an input file or a list of addresses")
 	}
 
 	return nil
