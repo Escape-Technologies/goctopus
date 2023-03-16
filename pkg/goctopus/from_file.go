@@ -22,6 +22,13 @@ func FingerprintFromFile(input *os.File) {
 
 	go FingerprintAddresses(addresses, output)
 
+	go func() {
+		for inputBuffer.Scan() {
+			addresses <- inputBuffer.Text()
+		}
+		close(addresses)
+	}()
+
 	foundCount := out.HandleOutput(output)
 	log.Infof("Done. Found %d graphql endpoints", foundCount)
 }

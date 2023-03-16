@@ -22,6 +22,7 @@ func handleSingleOutput(output *FingerprintOutput, outputFile *os.File, wg *sync
 	isWebhook := config.WebhookUrl != ""
 
 	jsonOutput, err := json.Marshal(output)
+	log.Infof("Found: %+v\n", string(jsonOutput))
 	if err != nil {
 		log.Error(err)
 	}

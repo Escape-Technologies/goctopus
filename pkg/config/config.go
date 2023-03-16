@@ -62,6 +62,7 @@ func LoadFromArgs() {
 	}
 
 	ValidateConfig(&config)
+	conf = &config
 }
 
 func ValidateConfig(conf *Config) {
