@@ -1,15 +1,16 @@
-package crawl
+package domain
 
 import (
 	"io"
 
-	"github.com/Escape-Technologies/goctopus/internal/config"
+	"github.com/Escape-Technologies/goctopus/pkg/config"
 	"github.com/projectdiscovery/subfinder/v2/pkg/resolve"
 	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 )
 
-func CrawlDomain(domain string, subDomains chan string, c *config.Config) (err error) {
+func EnumerateSubdomains(domain string, subDomains chan string) (err error) {
 	subDomains <- domain
+	c := config.Get()
 
 	if !c.SubdomainEnumeration {
 		return nil

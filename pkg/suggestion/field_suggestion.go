@@ -1,12 +1,11 @@
-// This is WIP, not implemented yet
-package fingerprint
+package suggestion
 
 import (
 	"encoding/json"
 	"regexp"
 
-	"github.com/Escape-Technologies/goctopus/internal/http"
 	"github.com/Escape-Technologies/goctopus/internal/utils"
+	"github.com/Escape-Technologies/goctopus/pkg/http"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -54,18 +53,18 @@ func makePayload(word string) []byte {
 	return []byte(`{"query": "{` + word + `}"}`)
 }
 
-func (fp *fingerprinter) FieldSuggestionEnabled() (bool, error) {
+func FingerprintFieldSuggestion(url string, client http.Client) bool {
 	for _, word := range *utils.Wordlist {
 		body := makePayload(word)
-		res, err := fp.Client.Post(fp.url, body)
-		log.Debugf("Response from %v: %v", fp.url, res.StatusCode)
+		res, err := client.Post(url, body)
+		log.Debugf("Response from %v: %v", url, res.StatusCode)
 		if err != nil {
-			log.Debugf("Error from %v: %v", fp.url, err)
-			return false, err
+			log.Debugf("Error from %v: %v", url, err)
+			return false
 		}
 		if IsSuggestionResponse(res) {
-			return true, nil
+			return true
 		}
 	}
-	return false, nil
+	return false
 }

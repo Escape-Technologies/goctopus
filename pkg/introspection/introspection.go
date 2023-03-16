@@ -1,10 +1,9 @@
-package fingerprint
+package introspection
 
 import (
 	"encoding/json"
 
-	"github.com/Escape-Technologies/goctopus/internal/http"
-
+	"github.com/Escape-Technologies/goctopus/pkg/http"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -12,14 +11,14 @@ var (
 	IntrospectionPayload = []byte(`{"query": "query { __schema { queryType { name } } }"}`)
 )
 
-func (fp *fingerprinter) IntrospectionOpen() (bool, error) {
+func FingerprintIntrospection(url string, client http.Client) (bool, error) {
 	body := &IntrospectionPayload
-	res, err := fp.Client.Post(fp.url, *body)
+	res, err := client.Post(url, *body)
 	if err != nil {
-		log.Debugf("Error from %v: %v", fp.url, err)
+		log.Debugf("Error from %v: %v", url, err)
 		return false, err
 	}
-	log.Debugf("Response from %v: %v", fp.url, res.StatusCode)
+	log.Debugf("Response from %v: %v", url, res.StatusCode)
 	return IsValidIntrospectionResponse(res), nil
 }
 

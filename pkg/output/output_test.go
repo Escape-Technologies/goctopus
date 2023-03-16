@@ -3,7 +3,7 @@ package output
 import (
 	"testing"
 
-	"github.com/Escape-Technologies/goctopus/internal/config"
+	"github.com/Escape-Technologies/goctopus/pkg/config"
 	"github.com/stretchr/testify/require"
 )
 

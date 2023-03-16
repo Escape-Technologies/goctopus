@@ -1,41 +1,41 @@
-package fingerprint
+package endpoint
 
 import (
 	"errors"
 	"reflect"
 	"testing"
 
-	"github.com/Escape-Technologies/goctopus/internal/config"
+	"github.com/Escape-Technologies/goctopus/pkg/config"
 	out "github.com/Escape-Technologies/goctopus/pkg/output"
 )
 
-type mockedFingerprinter struct {
+type mockedEndpointFingerprinter struct {
 	openGraphql         bool
 	authentifiedGraphql bool
 	introspection       bool
 	fieldSuggestion     bool
 }
 
-func (m *mockedFingerprinter) OpenGraphql() (bool, error) {
+func (m *mockedEndpointFingerprinter) IsOpenGraphql() (bool, error) {
 	return m.openGraphql, nil
 }
 
-func (m *mockedFingerprinter) AuthentifiedGraphql() (bool, error) {
+func (m *mockedEndpointFingerprinter) IsAuthentifiedGraphql() (bool, error) {
 	return m.authentifiedGraphql, nil
 }
 
-func (m *mockedFingerprinter) IntrospectionOpen() (bool, error) {
+func (m *mockedEndpointFingerprinter) HasIntrospectionOpen() (bool, error) {
 	return m.introspection, nil
 }
 
-func (m *mockedFingerprinter) FieldSuggestionEnabled() (bool, error) {
+func (m *mockedEndpointFingerprinter) HasFieldSuggestion() (bool, error) {
 	return m.fieldSuggestion, nil
 }
 
-func (m *mockedFingerprinter) Close() {}
+func (m *mockedEndpointFingerprinter) Close() {}
 
-func makeMockedFingerprinter(graphql bool, introspection bool) *mockedFingerprinter {
-	return &mockedFingerprinter{
+func makeMockedEndpointFingerprinter(graphql bool, introspection bool) *mockedEndpointFingerprinter {
+	return &mockedEndpointFingerprinter{
 		openGraphql:   graphql,
 		introspection: introspection,
 	}
@@ -97,11 +97,11 @@ func TestFingerprintUrl(t *testing.T) {
 	}
 
 	for i, test := range table {
-		fp := makeMockedFingerprinter(test.graphql, test.introspection)
+		e := makeMockedEndpointFingerprinter(test.graphql, test.introspection)
 		config := &config.Config{
 			Introspection: test.configIntrospectionEnabled,
 		}
-		output, err := FingerprintUrl(url, fp, config)
+		output, err := fingerprintEndpoint(url, e, config)
 		if err != nil {
 			if err.Error() != test.expectedErr.Error() {
 				t.Errorf("expected error %v, got %v", test.expectedErr, err)

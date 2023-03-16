@@ -1,10 +1,10 @@
-package fingerprint
+package suggestion
 
 import (
 	"testing"
 
-	"github.com/Escape-Technologies/goctopus/internal/http"
 	"github.com/Escape-Technologies/goctopus/internal/test/helpers"
+	"github.com/Escape-Technologies/goctopus/pkg/http"
 )
 
 func TestMatchFieldSuggestionRegex(t *testing.T) {
@@ -42,7 +42,7 @@ func TestIsSuggestionResponse(t *testing.T) {
 					"errors": 
 						[
 							{ 
-								"message": "Cannot query field \"tes\" on type \"Query\". Did you mean \"test\"?"
+								"message": "Cannot query field \"tes\" on type \"Query\". did you mean \"test\"?"
 							}
 						]
 					}`,

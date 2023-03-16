@@ -1,18 +1,18 @@
 package config
 
 import (
+	"errors"
 	"flag"
 	"os"
+	"strings"
 
+	"github.com/Escape-Technologies/goctopus/internal/utils"
 	log "github.com/sirupsen/logrus"
-)
-
-var (
-	Conf *Config
 )
 
 type Config struct {
 	InputFile            string
+	Addresses            []string
 	OutputFile           string
 	MaxWorkers           int
 	Verbose              bool
@@ -24,16 +24,34 @@ type Config struct {
 	SubdomainEnumeration bool
 }
 
-func ParseFlags() {
+var (
+	c *Config
+)
+
+func Get() *Config {
+	if c == nil {
+		log.Panic("Config not initialized")
+	}
+	return c
+}
+
+func parseArgs() []string {
+	if flag.Arg(0) == "" {
+		log.Error("Invalid addresses argument")
+		utils.PrintUsage()
+		os.Exit(1)
+	}
+	input := flag.Arg(0)
+	return strings.Split(input, ",")
+}
+
+func LoadFromArgs() {
+	flag.Usage = utils.PrintUsage
 	config := Config{}
 	// -- INPUT --
-	flag.StringVar(&config.InputFile, "i", "", "Input file")
-	// @TODO
-	// flag.StringVar(&config.InputFile, "d", "", "Input domains (comma separated)")
-	// flag.StringVar(&config.InputFile, "u", "", "Input urls (comma separated)")
+	flag.StringVar(&config.InputFile, "f", "", "Input file")
 
 	// -- CONFIG --
-	// @todo make output file optional ?
 	flag.StringVar(&config.OutputFile, "o", "output.jsonl", "Output file (json-lines format)")
 	flag.StringVar(&config.WebhookUrl, "webhook", "", "Webhook URL")
 	flag.IntVar(&config.MaxWorkers, "w", 100, "Max workers")
@@ -46,6 +64,10 @@ func ParseFlags() {
 
 	flag.Parse()
 
+	if config.InputFile == "" {
+		config.Addresses = parseArgs()
+	}
+
 	if config.Verbose {
 		log.SetLevel(log.DebugLevel)
 	}
@@ -54,34 +76,40 @@ func ParseFlags() {
 		log.SetLevel(log.ErrorLevel)
 	}
 
-	ValidateConfig(&config)
-	Conf = &config
+	if err := ValidateConfig(&config); err != nil {
+		log.Error(err)
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
+
+	c = &config
 }
 
-func ValidateConfig(conf *Config) {
+func ValidateConfig(conf *Config) error {
 	if conf.MaxWorkers < 1 {
-		log.Error("[Invalid args] Max workers must be greater than 0")
-		configError()
+		return errors.New("[Invalid config] Max workers must be greater than 0")
 	}
 
 	if conf.Timeout < 1 {
-		log.Error("[Invalid args] Timeout must be greater than 0")
-		configError()
+		return errors.New("[Invalid config] Timeout must be greater than 0")
 	}
 
 	if !conf.Introspection && conf.FieldSuggestion {
-		log.Error("[Invalid args] Introspection has to be enabled to use field suggestion fingerprinting")
-		configError()
+		return errors.New("[Invalid config] Introspection has to be enabled to use field suggestion fingerprinting")
 	}
 
-	if conf.InputFile == "" {
-		log.Error("[Invalid args] Please specify an input file")
-		configError()
+	if conf.InputFile == "" && len(conf.Addresses) == 0 {
+		return errors.New("[Invalid config] Please specify an input file or a list of addresses")
 	}
 
+	return nil
 }
 
-func configError() {
-	flag.PrintDefaults()
-	os.Exit(1)
+func Load(config *Config) {
+	if err := ValidateConfig(config); err != nil {
+		log.Error(err)
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
+	c = config
 }

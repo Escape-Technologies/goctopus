@@ -1,43 +1,29 @@
-package crawl
+package domain
 
 import (
 	"errors"
-	"fmt"
 	"net"
 
-	"github.com/Escape-Technologies/goctopus/internal/config"
-	"github.com/Escape-Technologies/goctopus/pkg/fingerprint"
-	out "github.com/Escape-Technologies/goctopus/pkg/output"
+	"github.com/Escape-Technologies/goctopus/pkg/endpoint"
+	"github.com/Escape-Technologies/goctopus/pkg/output"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
 
-func CrawlSubDomain(domain string) (*out.FingerprintOutput, error) {
-	routes := []string{
-		"",
-		"graphql",
-		"graphql/v2",
-		"graphql/v1",
-		"/api",
-		"api/graphql",
-		"api/v2/graphql",
-		"api/v1/graphql",
-		"appsync",
-		"altair",
-		"graph",
-	}
-	// @todo refactor this
-	for _, route := range routes {
-		url := fmt.Sprintf("https://%s/%s", domain, route)
-		fp := fingerprint.NewFingerprinter(url)
-		output, err := fingerprint.FingerprintUrl(url, fp, config.Conf)
-		fp.Close()
+// @todo test this
+func FingerprintSubDomain(domain string) (*output.FingerprintOutput, error) {
+	endpoints := endpoint.FuzzRoutes(domain)
+
+	for _, url := range endpoints {
+		output, err := endpoint.FingerprintEndpoint(url)
+		// @todo close client
+		// fp.Close()
 
 		// At the first timeout, drop the domain
 		// @todo number of tries in the config
 		if err != nil {
 			// If the domain is not a graphql endpoint, continue
-			if errors.Is(err, fingerprint.ErrNotGraphql) {
+			if errors.Is(err, endpoint.ErrNotGraphql) {
 				continue
 			}
 

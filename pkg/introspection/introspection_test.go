@@ -1,10 +1,10 @@
-package fingerprint
+package introspection
 
 import (
 	"testing"
 
-	"github.com/Escape-Technologies/goctopus/internal/http"
 	"github.com/Escape-Technologies/goctopus/internal/test/helpers"
+	"github.com/Escape-Technologies/goctopus/pkg/http"
 )
 
 func TestIsValidIntrospectionResponse(t *testing.T) {
