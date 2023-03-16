@@ -15,7 +15,7 @@ func worker(addresses chan string, output chan *output.FingerprintOutput, worker
 	defer wg.Done()
 	log.Debugf("Worker %d instantiated", workerId)
 	for address := range addresses {
-		log.Debugf("Worker (%d) started on: %v", workerId, address)
+		log.Debugf("Worker %d started on: %v", workerId, address)
 		res, err := FingerprintAddress(address)
 		if err == nil {
 			log.Debugf("Worker %d found endpoint: %v", workerId, res)

@@ -1,6 +1,7 @@
 package config
 
 import (
+	"errors"
 	"flag"
 	"os"
 
@@ -21,23 +22,21 @@ type Config struct {
 }
 
 var (
-	conf *Config
+	c *Config
 )
 
 func Get() *Config {
-	if conf == nil {
+	if c == nil {
 		log.Panic("Config not initialized")
 	}
-	return conf
+	return c
 }
 
 func LoadFromArgs() {
 	config := Config{}
 	// -- INPUT --
 	flag.StringVar(&config.InputFile, "i", "", "Input file")
-	// @TODO
-	// flag.StringVar(&config.InputFile, "d", "", "Input domains (comma separated)")
-	// flag.StringVar(&config.InputFile, "u", "", "Input urls (comma separated)")
+	// @todo accept stdin args as input (addresses comma separated)
 
 	// -- CONFIG --
 	// @todo make output file optional ?
@@ -61,34 +60,40 @@ func LoadFromArgs() {
 		log.SetLevel(log.ErrorLevel)
 	}
 
-	ValidateConfig(&config)
-	conf = &config
+	if err := ValidateConfig(&config); err != nil {
+		log.Error(err)
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
+
+	c = &config
 }
 
-func ValidateConfig(conf *Config) {
+func ValidateConfig(conf *Config) error {
 	if conf.MaxWorkers < 1 {
-		log.Error("[Invalid args] Max workers must be greater than 0")
-		configError()
+		return errors.New("[Invalid config] Max workers must be greater than 0")
 	}
 
 	if conf.Timeout < 1 {
-		log.Error("[Invalid args] Timeout must be greater than 0")
-		configError()
+		return errors.New("[Invalid config] Timeout must be greater than 0")
 	}
 
 	if !conf.Introspection && conf.FieldSuggestion {
-		log.Error("[Invalid args] Introspection has to be enabled to use field suggestion fingerprinting")
-		configError()
+		return errors.New("[Invalid config] Introspection has to be enabled to use field suggestion fingerprinting")
 	}
 
 	if conf.InputFile == "" {
-		log.Error("[Invalid args] Please specify an input file")
-		configError()
+		return errors.New("[Invalid config] Please specify an input file")
 	}
 
+	return nil
 }
 
-func configError() {
-	flag.PrintDefaults()
-	os.Exit(1)
+func Load(config *Config) {
+	if err := ValidateConfig(config); err != nil {
+		log.Error(err)
+		flag.PrintDefaults()
+		os.Exit(1)
+	}
+	c = config
 }
