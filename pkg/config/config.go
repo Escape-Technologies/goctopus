@@ -7,10 +7,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var (
-	Conf *Config
-)
-
 type Config struct {
 	InputFile            string
 	OutputFile           string
@@ -24,7 +20,18 @@ type Config struct {
 	SubdomainEnumeration bool
 }
 
-func ParseFlags() {
+var (
+	conf *Config
+)
+
+func Get() *Config {
+	if conf == nil {
+		log.Panic("Config not initialized")
+	}
+	return conf
+}
+
+func LoadFromArgs() {
 	config := Config{}
 	// -- INPUT --
 	flag.StringVar(&config.InputFile, "i", "", "Input file")
@@ -55,7 +62,6 @@ func ParseFlags() {
 	}
 
 	ValidateConfig(&config)
-	Conf = &config
 }
 
 func ValidateConfig(conf *Config) {

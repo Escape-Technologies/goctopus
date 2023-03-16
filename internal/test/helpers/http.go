@@ -1,6 +1,6 @@
 package helpers
 
-import "github.com/Escape-Technologies/goctopus/internal/http"
+import "github.com/Escape-Technologies/goctopus/pkg/http"
 
 func MockHttpResponse(statusCode int, body string) *http.Response {
 	bodyBytes := []byte(body)

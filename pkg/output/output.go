@@ -3,8 +3,8 @@ package output
 import (
 	"encoding/json"
 
-	"github.com/Escape-Technologies/goctopus/internal/config"
 	"github.com/Escape-Technologies/goctopus/internal/utils"
+	"github.com/Escape-Technologies/goctopus/pkg/config"
 )
 
 type FingerprintResult string
@@ -24,7 +24,7 @@ type FingerprintOutput struct {
 }
 
 func (o *FingerprintOutput) MarshalJSON() ([]byte, error) {
-	return marshalOutput(o, config.Conf)
+	return marshalOutput(o, config.Get())
 }
 
 // This is separated from the above function to decouple the output from the config

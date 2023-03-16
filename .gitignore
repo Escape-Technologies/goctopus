@@ -8,7 +8,7 @@ testers
 !internal/utils/assets/wordlist.txt
 
 # ignore builds
-goctopus
+/goctopus
 
 dist/
 .env

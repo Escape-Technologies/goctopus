@@ -1,10 +1,10 @@
-package fingerprint
+package graphql
 
 import (
 	"testing"
 
-	"github.com/Escape-Technologies/goctopus/internal/http"
 	"github.com/Escape-Technologies/goctopus/internal/test/helpers"
+	"github.com/Escape-Technologies/goctopus/pkg/http"
 )
 
 func TestIsAuthentifiedGraphqlResponse(t *testing.T) {
@@ -69,7 +69,7 @@ func TestIsAuthentifiedGraphqlResponse(t *testing.T) {
 	}
 
 	for _, table := range tables {
-		got := isAuthentifiedGraphqlResponse(table.resp)
+		got := IsAuthentifiedGraphqlResponse(table.resp)
 		if got != table.want {
 			t.Errorf("isAuthentifiedGraphqlResponse() was incorrect for %+v, got: %v, want: %v.", table.resp, got, table.want)
 		}
@@ -127,7 +127,7 @@ func TestIsValidGraphqlResponse(t *testing.T) {
 	}
 
 	for _, table := range tables {
-		got := isOpenGraphqlResponse(table.resp)
+		got := IsOpenGraphqlResponse(table.resp)
 		if got != table.want {
 			t.Errorf("isOpenGraphqlResponse() was incorrect for %+v, got: %v, want: %v.", table.resp, got, table.want)
 		}

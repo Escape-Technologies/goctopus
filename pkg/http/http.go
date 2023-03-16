@@ -7,7 +7,7 @@ import (
 
 	"crypto/sha256"
 
-	"github.com/Escape-Technologies/goctopus/internal/config"
+	"github.com/Escape-Technologies/goctopus/pkg/config"
 	log "github.com/sirupsen/logrus"
 	"github.com/valyala/fasthttp"
 )
@@ -19,12 +19,14 @@ type Client interface {
 
 type client struct {
 	// url -> sha256(body) -> response
-	cache map[string]map[string]*Response
+	cache  map[string]map[string]*Response
+	config *config.Config
 }
 
-func NewClient() Client {
+func NewClient(config *config.Config) Client {
 	return &client{
-		cache: make(map[string]map[string]*Response),
+		cache:  make(map[string]map[string]*Response),
+		config: config,
 	}
 }
 
@@ -32,13 +34,13 @@ var (
 	fastHttpClient *fasthttp.Client
 )
 
-func initClient() {
+func initClient(config *config.Config) {
 	fastHttpClient = &fasthttp.Client{
 		// MaxConnsPerHost:     1,
-		ReadTimeout:         time.Second * time.Duration(config.Conf.Timeout),
-		WriteTimeout:        time.Second * time.Duration(config.Conf.Timeout),
-		MaxIdleConnDuration: time.Second * time.Duration(config.Conf.Timeout),
-		MaxConnDuration:     time.Second * time.Duration(config.Conf.Timeout),
+		ReadTimeout:         time.Second * time.Duration(config.Timeout),
+		WriteTimeout:        time.Second * time.Duration(config.Timeout),
+		MaxIdleConnDuration: time.Second * time.Duration(config.Timeout),
+		MaxConnDuration:     time.Second * time.Duration(config.Timeout),
 		TLSConfig: &tls.Config{
 			InsecureSkipVerify: true,
 		},
@@ -52,7 +54,7 @@ type Response struct {
 
 func (c *client) Post(url string, body []byte) (*Response, error) {
 	if fastHttpClient == nil {
-		initClient()
+		initClient(c.config)
 	}
 	sha := sha256.Sum256(body)
 	if resp := c.cacheLookup(url, sha); resp != nil {
@@ -63,12 +65,12 @@ func (c *client) Post(url string, body []byte) (*Response, error) {
 	req.Header.SetContentType("application/json")
 	req.SetRequestURI(url)
 	req.SetBody(body)
-	req.SetTimeout(time.Second * time.Duration(config.Conf.Timeout))
+	req.SetTimeout(time.Second * time.Duration(c.config.Timeout))
 	defer fasthttp.ReleaseRequest(req)
 	resp := fasthttp.AcquireResponse()
 	defer fasthttp.ReleaseResponse(resp)
 	log.Debug("Request sent to: ", url)
-	err := fastHttpClient.DoTimeout(req, resp, time.Second*time.Duration(config.Conf.Timeout))
+	err := fastHttpClient.DoTimeout(req, resp, time.Second*time.Duration(c.config.Timeout))
 	if err != nil {
 		return nil, err
 	}
@@ -105,24 +107,21 @@ func (c *client) cacheResponse(url string, bodySha [32]byte, resp *Response) {
 	c.cache[url][string(bodySha[:])] = resp
 }
 
-func SendToWebhook(body []byte, wg *sync.WaitGroup) error {
+func SendToWebhook(url string, body []byte, wg *sync.WaitGroup) error {
 	if fastHttpClient == nil {
-		initClient()
+		log.Panic("Webhook called before any client was initialized")
 	}
 	defer wg.Done()
-	if config.Conf.WebhookUrl == "" {
-		return nil
-	}
 	req := fasthttp.AcquireRequest()
 	req.Header.SetMethod("POST")
 	req.Header.SetContentType("application/json")
-	req.SetRequestURI(config.Conf.WebhookUrl)
+	req.SetRequestURI(url)
 	req.SetBody(body)
 	defer fasthttp.ReleaseRequest(req)
 	log.Debug("Sending to webhook")
 	err := fastHttpClient.Do(req, nil)
 	if err != nil {
-		log.Debugf("Error from %v: %v", config.Conf.WebhookUrl, err)
+		log.Debugf("Error from webhook %v: %v", url, err)
 	}
 	return err
 }
