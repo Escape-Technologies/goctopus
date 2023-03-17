@@ -1,6 +1,7 @@
 package goctopus
 
 import (
+	"github.com/Escape-Technologies/goctopus/pkg/address"
 	"github.com/Escape-Technologies/goctopus/pkg/config"
 	out "github.com/Escape-Technologies/goctopus/pkg/output"
 	log "github.com/sirupsen/logrus"
@@ -9,11 +10,11 @@ import (
 func FingerprintFromSlice(addresses []string) {
 	maxWorkers := config.Get().MaxWorkers
 	output := make(chan *out.FingerprintOutput, maxWorkers)
-	addressChan := make(chan string, maxWorkers)
+	addressChan := make(chan *address.Sourced, maxWorkers)
 
 	go func() {
-		for _, address := range addresses {
-			addressChan <- address
+		for _, addr := range addresses {
+			addressChan <- address.NewSourced(addr, addr)
 		}
 		close(addressChan)
 	}()

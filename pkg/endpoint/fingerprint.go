@@ -3,6 +3,7 @@ package endpoint
 import (
 	"errors"
 
+	"github.com/Escape-Technologies/goctopus/pkg/address"
 	"github.com/Escape-Technologies/goctopus/pkg/config"
 	"github.com/Escape-Technologies/goctopus/pkg/http"
 	"github.com/Escape-Technologies/goctopus/pkg/output"
@@ -10,10 +11,11 @@ import (
 
 var ErrNotGraphql = errors.New("no graphql endpoint found on this route")
 
-func fingerprintEndpoint(url string, e endpointFingerprinter, config *config.Config) (*output.FingerprintOutput, error) {
+func fingerprintEndpoint(url *address.Sourced, e endpointFingerprinter, config *config.Config) (*output.FingerprintOutput, error) {
 	out := &output.FingerprintOutput{
-		Url:  url,
-		Type: output.ResultOpenGraphql,
+		Url:    url.Address,
+		Source: url.Source,
+		Type:   output.ResultOpenGraphql,
 	}
 	isOpenGraphql, err := e.IsOpenGraphql()
 	if err != nil {
@@ -50,11 +52,11 @@ func fingerprintEndpoint(url string, e endpointFingerprinter, config *config.Con
 	return out, nil
 }
 
-func FingerprintEndpoint(url string) (*output.FingerprintOutput, error) {
+func FingerprintEndpoint(url *address.Sourced) (*output.FingerprintOutput, error) {
 	c := config.Get()
 	client := http.NewClient(c)
 	e := NewEndpointFingerprinter(url, client)
 	res, err := fingerprintEndpoint(url, e, c)
-	client.DeleteUrlCache(url)
+	client.DeleteUrlCache(url.Address)
 	return res, err
 }

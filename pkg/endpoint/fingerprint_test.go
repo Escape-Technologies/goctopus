@@ -5,6 +5,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/Escape-Technologies/goctopus/pkg/address"
 	"github.com/Escape-Technologies/goctopus/pkg/config"
 	out "github.com/Escape-Technologies/goctopus/pkg/output"
 )
@@ -44,7 +45,10 @@ func makeMockedEndpointFingerprinter(graphql bool, introspection bool) *mockedEn
 // @todo test field suggestion
 func TestFingerprintUrl(t *testing.T) {
 
-	url := "https://example.com/graphql"
+	url := &address.Sourced{
+		Address: "https://example.com/graphql",
+		Source:  "example.com",
+	}
 	_type := out.ResultOpenGraphql
 
 	table := []struct {
@@ -59,7 +63,8 @@ func TestFingerprintUrl(t *testing.T) {
 			true,
 			&out.FingerprintOutput{
 				Introspection: true,
-				Url:           url,
+				Url:           url.Address,
+				Source:        url.Source,
 				Type:          _type,
 			},
 			nil,
@@ -70,7 +75,8 @@ func TestFingerprintUrl(t *testing.T) {
 			false,
 			&out.FingerprintOutput{
 				Introspection: false,
-				Url:           url,
+				Url:           url.Address,
+				Source:        url.Source,
 				Type:          _type,
 			},
 			nil,
@@ -81,7 +87,8 @@ func TestFingerprintUrl(t *testing.T) {
 			false,
 			&out.FingerprintOutput{
 				Introspection: false,
-				Url:           url,
+				Url:           url.Address,
+				Source:        url.Source,
 				Type:          _type,
 			},
 			nil,

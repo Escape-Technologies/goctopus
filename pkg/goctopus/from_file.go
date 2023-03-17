@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"os"
 
+	"github.com/Escape-Technologies/goctopus/pkg/address"
 	"github.com/Escape-Technologies/goctopus/pkg/config"
 	out "github.com/Escape-Technologies/goctopus/pkg/output"
 
@@ -17,14 +18,15 @@ func FingerprintFromFile(input *os.File) {
 
 	maxWorkers := config.Get().MaxWorkers
 	log.Infof("Starting %d workers\n", maxWorkers)
-	addresses := make(chan string, maxWorkers)
+	addresses := make(chan *address.Sourced, maxWorkers)
 	output := make(chan *out.FingerprintOutput, maxWorkers)
 
 	go FingerprintAddresses(addresses, output)
 
 	go func() {
 		for inputBuffer.Scan() {
-			addresses <- inputBuffer.Text()
+			addr := inputBuffer.Text()
+			addresses <- address.NewSourced(addr, addr)
 		}
 		close(addresses)
 	}()

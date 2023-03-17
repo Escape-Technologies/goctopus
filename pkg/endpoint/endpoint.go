@@ -1,6 +1,7 @@
 package endpoint
 
 import (
+	"github.com/Escape-Technologies/goctopus/pkg/address"
 	"github.com/Escape-Technologies/goctopus/pkg/graphql"
 	"github.com/Escape-Technologies/goctopus/pkg/http"
 	"github.com/Escape-Technologies/goctopus/pkg/introspection"
@@ -8,7 +9,7 @@ import (
 )
 
 type _endpointFingerprinter struct {
-	url    string
+	url    *address.Sourced
 	client http.Client
 }
 
@@ -19,7 +20,7 @@ type endpointFingerprinter interface {
 	HasIntrospectionOpen() (bool, error)
 }
 
-func NewEndpointFingerprinter(url string, client http.Client) endpointFingerprinter {
+func NewEndpointFingerprinter(url *address.Sourced, client http.Client) endpointFingerprinter {
 	return &_endpointFingerprinter{
 		url:    url,
 		client: client,
@@ -27,17 +28,17 @@ func NewEndpointFingerprinter(url string, client http.Client) endpointFingerprin
 }
 
 func (e *_endpointFingerprinter) IsOpenGraphql() (bool, error) {
-	return graphql.FingerprintOpenGraphql(e.url, e.client)
+	return graphql.FingerprintOpenGraphql(e.url.Address, e.client)
 }
 
 func (e *_endpointFingerprinter) IsAuthentifiedGraphql() (bool, error) {
-	return graphql.FingerprintAuthentifiedGraphql(e.url, e.client)
+	return graphql.FingerprintAuthentifiedGraphql(e.url.Address, e.client)
 }
 
 func (e *_endpointFingerprinter) HasFieldSuggestion() (bool, error) {
-	return suggestion.FingerprintFieldSuggestion(e.url, e.client), nil
+	return suggestion.FingerprintFieldSuggestion(e.url.Address, e.client), nil
 }
 
 func (e *_endpointFingerprinter) HasIntrospectionOpen() (bool, error) {
-	return introspection.FingerprintIntrospection(e.url, e.client)
+	return introspection.FingerprintIntrospection(e.url.Address, e.client)
 }
