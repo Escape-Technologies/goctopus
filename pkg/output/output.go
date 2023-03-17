@@ -21,6 +21,7 @@ type FingerprintOutput struct {
 	Url             string            `json:"url"`
 	Introspection   bool              `json:"introspection"`
 	FieldSuggestion bool              `json:"field_suggestion"`
+	Source          string            `json:"source"` // the original address used to fingerprint the endpoint
 }
 
 func (o *FingerprintOutput) MarshalJSON() ([]byte, error) {

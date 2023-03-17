@@ -4,6 +4,7 @@ import (
 	"sync"
 
 	"github.com/Escape-Technologies/goctopus/internal/utils"
+	"github.com/Escape-Technologies/goctopus/pkg/address"
 	"github.com/Escape-Technologies/goctopus/pkg/config"
 	"github.com/Escape-Technologies/goctopus/pkg/domain"
 	"github.com/Escape-Technologies/goctopus/pkg/endpoint"
@@ -11,7 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func worker(addresses chan string, output chan *output.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
+func worker(addresses chan *address.Sourced, output chan *output.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	log.Debugf("Worker %d instantiated", workerId)
 	for address := range addresses {
@@ -25,9 +26,9 @@ func worker(addresses chan string, output chan *output.FingerprintOutput, worker
 	log.Debugf("Worker %d finished", workerId)
 }
 
-func FingerprintAddress(address string) (*output.FingerprintOutput, error) {
+func FingerprintAddress(address *address.Sourced) (*output.FingerprintOutput, error) {
 	// If the domain is a url, we don't need to crawl it
-	if utils.IsUrl(address) {
+	if utils.IsUrl(address.Address) {
 		return endpoint.FingerprintEndpoint(address)
 	} else {
 		return domain.FingerprintSubDomain(address)
@@ -35,10 +36,10 @@ func FingerprintAddress(address string) (*output.FingerprintOutput, error) {
 }
 
 // An addresses can be a domain or an url
-func FingerprintAddresses(addresses chan string, output chan *output.FingerprintOutput) {
+func FingerprintAddresses(addresses chan *address.Sourced, output chan *output.FingerprintOutput) {
 
 	maxWorkers := config.Get().MaxWorkers
-	enumeratedAddresses := make(chan string, config.Get().MaxWorkers)
+	enumeratedAddresses := make(chan *address.Sourced, config.Get().MaxWorkers)
 
 	workersWg := sync.WaitGroup{}
 	workersWg.Add(maxWorkers)
@@ -51,7 +52,7 @@ func FingerprintAddresses(addresses chan string, output chan *output.Fingerprint
 	for address := range addresses {
 		log.Debugf("(%d) Adding %v to the queue", i, address)
 		// If the domain is a url, we don't need to crawl it
-		if utils.IsUrl(address) {
+		if utils.IsUrl(address.Address) {
 			enumeratedAddresses <- address
 		} else {
 			if err := domain.EnumerateSubdomains(address, enumeratedAddresses); err != nil {

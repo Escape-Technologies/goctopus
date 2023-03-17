@@ -10,6 +10,7 @@ import (
 func TestMarshallOutput(t *testing.T) {
 	domain := "example.com"
 	url := "https://example.com/graphql"
+	source := "example.com"
 	tables := []struct {
 		output *FingerprintOutput
 		config *config.Config
@@ -22,12 +23,13 @@ func TestMarshallOutput(t *testing.T) {
 				Introspection:   true,
 				FieldSuggestion: false,
 				Type:            ResultOpenGraphql,
+				Source:          source,
 			},
 			&config.Config{
 				Introspection:   true,
 				FieldSuggestion: false,
 			},
-			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultOpenGraphql) + `","introspection":true}`,
+			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultOpenGraphql) + `","introspection":true` + `, "source":"` + source + `"}`,
 		},
 		{
 			&FingerprintOutput{
@@ -36,12 +38,13 @@ func TestMarshallOutput(t *testing.T) {
 				Introspection:   false,
 				FieldSuggestion: true,
 				Type:            ResultOpenGraphql,
+				Source:          source,
 			},
 			&config.Config{
 				Introspection:   true,
 				FieldSuggestion: true,
 			},
-			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultOpenGraphql) + `","field_suggestion":true, "introspection":false}`,
+			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultOpenGraphql) + `","field_suggestion":true, "introspection":false` + `, "source":"` + source + `"}`,
 		},
 		{
 			&FingerprintOutput{
@@ -50,12 +53,13 @@ func TestMarshallOutput(t *testing.T) {
 				Introspection:   false,
 				FieldSuggestion: false,
 				Type:            ResultAuthentifiedGraphql,
+				Source:          source,
 			},
 			&config.Config{
 				Introspection:   false,
 				FieldSuggestion: false,
 			},
-			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultAuthentifiedGraphql) + `"}`,
+			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultAuthentifiedGraphql) + `",` + `"source":"` + source + `"}`,
 		},
 	}
 	for _, table := range tables {
