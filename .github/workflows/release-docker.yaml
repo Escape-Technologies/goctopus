@@ -13,6 +13,12 @@ jobs:
     steps:
       - name: Git Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: "Get Previous tag"
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
@@ -31,9 +37,6 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ${{ secrets.DOCKERHUB_REPO }}/goctopus
-          tags: |
-            # set version tag for semver
-            type=semver,pattern={{ version }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
