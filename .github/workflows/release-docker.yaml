@@ -34,6 +34,8 @@ jobs:
           tags: |
             # set latest tag for default branch (done by default for master but not for main)
             type=raw,value=latest,enable={{is_default_branch}}
+            # set version tag for semver
+            type=semver,pattern={{version}}
 
       - name: Build and push
         uses: docker/build-push-action@v4
