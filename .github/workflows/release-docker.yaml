@@ -40,6 +40,7 @@ jobs:
           tags: |
             # set latest tag for default branch
             type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}},value=${{ steps.previoustag.outputs.tag }}
 
       - name: Build and push
         uses: docker/build-push-action@v4
