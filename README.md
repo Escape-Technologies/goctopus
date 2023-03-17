@@ -27,7 +27,7 @@ Blazing fast graphql fingerprinting toolbox.
   __ _  ___   ___| |_ ___  _ __  _   _ ___
  / _` |/ _ \ / __| __/ _ \| '_ \| | | / __|
 | (_| | (_) | (__| || (_) | |_) | |_| \__ \
- \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.3
+ \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.4
  |___/                    |_|
 INFO[0000] Starting 100 workers
 INFO[0000] Found: {"domain":"gontoz.escape.tech","type":"OPEN_GRAPHQL","url":"https://gontoz.escape.tech"}
@@ -40,29 +40,46 @@ Using go:
 
 ```BASH
 go install -v github.com/escape-technologies/goctopus@latest
-goctopus -i input.txt -o output.jsonl
+goctopus example.com
 ```
 
 Using docker:
 
 ```BASH
-docker run --rm -it -v $(pwd):/data escapetech/goctopus:main -i /data/input.txt -o /data/output.jsonl
+docker run --rm -it -v $(pwd):/data escapetech/goctopus:latest -o /data/output.jsonl
 ```
 
 ## Main options & features
 
 ### Input
 
-For now, goctopus only supports input from a file.
-The file path should be specified using the `-i` flag.
-The input file should contain a list of endpoints and/or urls separated by newlines.
-This is an example of a valid input file:
+Goctopus takes a list of adresses (endpoints and/or urls) as input.
+Adresses can be specified directly in the command line or in a file.
+
+#### Command line
+
+The adresses can be specified directly in the command line, comma separated.
+Example:
+
+```BASH
+goctopus example.com,https://example.com/graphql
+```
+
+#### Input file
+
+The adresses can be specified in a file, one per line.
+The file path should be specified using the `-f` flag.
+Example:
 
 ```TEXT
 example.com
 https://example.com/graphql
 escape.tech
 https://example.com/api
+```
+
+```BASH
+goctopus -f input.txt
 ```
 
 ### Introspection fingerprinting
@@ -105,7 +122,12 @@ The `type` field can be one of the following:
 ## Aditionnal options
 
 ```BASH
-  -i string
+Usage: goctopus [options] [addresses]
+[addresses]: A list of addresses to fingerprint, comma separated.
+Addresses can be in the form of http://example.com/graphql or example.com.
+If an input file is specified, this argument is ignored.
+[options]:
+  -f string
     	Input file
   -introspect
     	Enable introspection fingerprinting
@@ -126,6 +148,21 @@ The `type` field can be one of the following:
     	Webhook URL
 ```
 
+## Docker usage
+
+Using volumes to load the input file and save to the output file:
+
+```BASH
+docker run --rm -it -v $(pwd):/data escapetech/goctopus:latest -f /data/input.txt -o /data/output.jsonl
+```
+
+Using a specific version:
+
+```BASH
+# for version v0.0.4
+docker run --rm -it escapetech/goctopus:0.0.4 [args]
+```
+
 ## Roadmap
 
 - [ ] Better wordlist for field suggestion fingerprinting, to improve the detection performance and detection rate.
@@ -137,3 +174,7 @@ The `type` field can be one of the following:
 - [ ] Resume from output file.
 - [ ] Custom ascii art.
 - [ ] Fix docker tag.
+
+```
+
+```
