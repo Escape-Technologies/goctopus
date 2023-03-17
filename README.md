@@ -27,10 +27,10 @@ Blazing fast graphql fingerprinting toolbox.
   __ _  ___   ___| |_ ___  _ __  _   _ ___
  / _` |/ _ \ / __| __/ _ \| '_ \| | | / __|
 | (_| | (_) | (__| || (_) | |_) | |_| \__ \
- \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.4
+ \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.5
  |___/                    |_|
 INFO[0000] Starting 100 workers
-INFO[0000] Found: {"domain":"gontoz.escape.tech","type":"OPEN_GRAPHQL","url":"https://gontoz.escape.tech"}
+INFO[0000] Found: {"domain":"gontoz.escape.tech","type":"OPEN_GRAPHQL","url":"https://gontoz.escape.tech", "source": "escape.tech"}
 INFO[0002] Done. Found 1 graphql endpoint
 `````
 
@@ -108,9 +108,10 @@ Each line corresponds to one found graphql endpoint and will contain at least th
 
 ```JSON
 {
-  "domain": "example.com",
+  "domain": "subdomain.example.com",
   "type": "OPEN_GRAPHQL",
-  "url": "https://example.com/graphql"
+  "url": "https://subdomain.example.com/graphql",
+  "source": "example.com"
 }
 ```
 
@@ -159,8 +160,8 @@ docker run --rm -it -v $(pwd):/data escapetech/goctopus:latest -f /data/input.tx
 Using a specific version:
 
 ```BASH
-# for version v0.0.4
-docker run --rm -it escapetech/goctopus:0.0.4 [args]
+# for version vA.B.C
+docker run --rm -it escapetech/goctopus:A.B.C [args]
 ```
 
 ## Roadmap
