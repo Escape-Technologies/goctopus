@@ -165,7 +165,7 @@ docker run --rm -it escapetech/goctopus:0.0.4 [args]
 
 ## Roadmap
 
-- [ ] Better wordlist for field suggestion fingerprinting, to improve the detection performance and detection rate.
+- [x] Better wordlist for field suggestion fingerprinting, to improve the detection performance and detection rate.
 - [ ] Engine fingerprinting.
 - [x] Refactor to make goctopus usable as a go package.
 - [ ] Document goctopus as a go package.
