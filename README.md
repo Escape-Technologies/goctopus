@@ -46,7 +46,7 @@ goctopus example.com
 Using docker:
 
 ```BASH
-docker run --rm -it -v $(pwd):/data escapetech/goctopus:latest -o /data/output.jsonl
+docker run --rm -it escapetech/goctopus:latest example.com
 ```
 
 ## Main options & features
