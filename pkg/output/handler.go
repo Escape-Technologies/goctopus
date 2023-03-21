@@ -28,19 +28,19 @@ func handleSingleOutput(output *FingerprintOutput, outputFile *os.File, wg *sync
 	}
 
 	if isOutputFile {
-		if err != nil {
+		content := append(jsonOutput, []byte("\n")...)
+		if _, err := outputFile.Write(content); err != nil {
 			log.Error(err)
 		}
-		content := append(jsonOutput, []byte("\n")...)
-		outputFile.Write(content)
 	}
 
 	if isWebhook {
-		if err != nil {
-			log.Error(err)
-		}
 		wg.Add(1)
-		go http.SendToWebhook(config.WebhookUrl, jsonOutput, wg)
+		go func() {
+			if err := http.SendToWebhook(config.WebhookUrl, jsonOutput, wg); err != nil {
+				log.Error(err)
+			}
+		}()
 	}
 
 }
