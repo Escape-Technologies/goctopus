@@ -2,10 +2,13 @@
 
 Blazing fast graphql fingerprinting toolbox.
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/Escape-Technologies/goctopus.svg)](https://pkg.go.dev/github.com/Escape-Technologies/goctopus)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Escape-Technologies/goctopus)](https://goreportcard.com/report/github.com/Escape-Technologies/goctopus)
+[![Docker Pulls](https://img.shields.io/docker/pulls/escapetech/goctopus)](https://hub.docker.com/r/escapetech/goctopus)
+
 > ⚠️ Goctopus is still in very early development. Breaking changes are expected.
 
 `````TEXT
-
                     .-'   `'.
                    /         \
                    |         ;
