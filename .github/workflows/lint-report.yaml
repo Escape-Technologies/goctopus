@@ -1,0 +1,47 @@
+name: 💅 Lint report
+
+on:
+  pull_request:
+    paths:
+      - "**.go"
+  workflow_dispatch:
+
+jobs:
+  report:
+    name: Report
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
+        with:
+          go-version: 1.20
+      - name: Install report card
+        run: |
+          git clone https://github.com/gojp/goreportcard.git
+          cd goreportcard
+          make install
+          go install ./cmd/goreportcard-cli
+          cd ..
+          rm -rf goreportcard
+      - name: Report
+        run: goreportcard-cli -v -t 100
+
+  report-card:
+    name: Report Card
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Request Report Update
+        run: |
+          curl -X POST -F "repo=github.com/$GITHUB_REPOSITORY" https://goreportcard.com/checks
+
+  golangci-lint:
+    name: Lint (golangci-lint)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/setup-go@v4
+        with:
+          go-version: "1.20"
+          cache: false
+      - uses: actions/checkout@v3
+      - name: golangci-lint
+        uses: golangci/golangci-lint-action@v3
