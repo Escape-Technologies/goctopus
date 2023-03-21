@@ -2,18 +2,14 @@
 
 Blazing fast graphql fingerprinting toolbox.
 
-[![Go Reference](https://pkg.go.dev/badge/github.com/Escape-Technologies/http-request-catcher.svg)](https://pkg.go.dev/github.com/Escape-Technologies/http-request-catcher)
-[![CI](https://github.com/Escape-Technologies/http-request-catcher/actions/workflows/ci.yaml/badge.svg)](https://github.com/Escape-Technologies/http-request-catcher/actions/workflows/ci.yaml)
-[![CD](https://github.com/Escape-Technologies/http-request-catcher/actions/workflows/cd.yaml/badge.svg)](https://github.com/Escape-Technologies/http-request-catcher/actions/workflows/cd.yaml)
-[![Go Report Card](https://goreportcard.com/badge/github.com/Escape-Technologies/http-request-catcher)](https://goreportcard.com/report/github.com/Escape-Technologies/http-request-catcher)
-[![codecov](https://codecov.io/gh/Escape-Technologies/http-request-catcher/branch/main/graph/badge.svg)](https://codecov.io/gh/Escape-Technologies/http-request-catcher)
-![Docker Pulls](https://img.shields.io/docker/pulls/escapetech/http-request-catcher)
-![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/escapetech/http-request-catcher)
+[![Go Reference](https://pkg.go.dev/badge/github.com/Escape-Technologies/goctopus.svg)](https://pkg.go.dev/github.com/Escape-Technologies/goctopus)
+[![Go Report Card](https://goreportcard.com/badge/github.com/Escape-Technologies/goctopus)](https://goreportcard.com/report/github.com/Escape-Technologies/goctopus)
+![Docker Pulls](https://img.shields.io/docker/pulls/escapetech/goctopus)
+![Docker Image Size (latest by date)](https://img.shields.io/docker/image-size/escapetech/goctopus)
 
 > ⚠️ Goctopus is still in very early development. Breaking changes are expected.
 
 `````TEXT
-
                     .-'   `'.
                    /         \
                    |         ;
