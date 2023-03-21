@@ -111,5 +111,14 @@ func Load(config *Config) {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
+
 	c = config
+
+	if c.Verbose {
+		log.SetLevel(log.DebugLevel)
+	}
+
+	if c.Silent {
+		log.SetLevel(log.ErrorLevel)
+	}
 }
