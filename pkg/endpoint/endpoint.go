@@ -9,7 +9,7 @@ import (
 )
 
 type _endpointFingerprinter struct {
-	url    *address.Sourced
+	url    *address.Addr
 	client http.Client
 }
 
@@ -20,7 +20,7 @@ type endpointFingerprinter interface {
 	HasIntrospectionOpen() (bool, error)
 }
 
-func NewEndpointFingerprinter(url *address.Sourced, client http.Client) endpointFingerprinter {
+func NewEndpointFingerprinter(url *address.Addr, client http.Client) endpointFingerprinter {
 	return &_endpointFingerprinter{
 		url:    url,
 		client: client,

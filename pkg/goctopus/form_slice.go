@@ -10,11 +10,11 @@ import (
 func FingerprintFromSlice(addresses []string) {
 	maxWorkers := config.Get().MaxWorkers
 	output := make(chan *out.FingerprintOutput, maxWorkers)
-	addressChan := make(chan *address.Sourced, maxWorkers)
+	addressChan := make(chan *address.Addr, maxWorkers)
 
 	go func() {
 		for _, addr := range addresses {
-			addressChan <- address.NewSourced(addr, addr)
+			addressChan <- address.New(addr)
 		}
 		close(addressChan)
 	}()
