@@ -32,12 +32,13 @@ func CountLines(f *os.File) (int, error) {
 		switch {
 		case err == io.EOF:
 			// Seek is used to reset the file pointer to the beginning of the file
-			f.Seek(0, io.SeekStart)
+			if _, err := f.Seek(0, io.SeekStart); err != nil {
+				panic(err)
+			}
 			return count, nil
 
 		case err != nil:
-			f.Seek(0, io.SeekStart)
-			return count, err
+			panic(err)
 		}
 	}
 }

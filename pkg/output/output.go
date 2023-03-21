@@ -37,7 +37,9 @@ func marshalOutput(o *FingerprintOutput, c *config.Config) ([]byte, error) {
 	// this is need to avoid an infinite recursion when marshaling the output
 	type alias FingerprintOutput
 	outputBytes, _ := json.Marshal((*alias)(o))
-	json.Unmarshal(outputBytes, &outputMap)
+	if err := json.Unmarshal(outputBytes, &outputMap); err != nil {
+		panic(err)
+	}
 
 	// remove the introspection field if it is disabled
 	if !c.Introspection {
