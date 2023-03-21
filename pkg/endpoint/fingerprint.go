@@ -11,7 +11,7 @@ import (
 
 var ErrNotGraphql = errors.New("no graphql endpoint found on this route")
 
-func fingerprintEndpoint(url *address.Sourced, e endpointFingerprinter, config *config.Config) (*output.FingerprintOutput, error) {
+func fingerprintEndpoint(url *address.Addr, e endpointFingerprinter, config *config.Config) (*output.FingerprintOutput, error) {
 	out := &output.FingerprintOutput{
 		Url:    url.Address,
 		Source: url.Source,
@@ -52,7 +52,7 @@ func fingerprintEndpoint(url *address.Sourced, e endpointFingerprinter, config *
 	return out, nil
 }
 
-func FingerprintEndpoint(url *address.Sourced) (*output.FingerprintOutput, error) {
+func FingerprintEndpoint(url *address.Addr) (*output.FingerprintOutput, error) {
 	c := config.Get()
 	client := http.NewClient(c)
 	e := NewEndpointFingerprinter(url, client)

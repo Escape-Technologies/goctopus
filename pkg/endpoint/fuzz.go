@@ -6,7 +6,7 @@ import (
 	"github.com/Escape-Technologies/goctopus/pkg/address"
 )
 
-func FuzzRoutes(domain *address.Sourced) []*address.Sourced {
+func FuzzRoutes(domain *address.Addr) []*address.Addr {
 	routes := []string{
 		"",
 		"graphql",
@@ -20,7 +20,7 @@ func FuzzRoutes(domain *address.Sourced) []*address.Sourced {
 		"altair",
 		"graph",
 	}
-	endpoints := []*address.Sourced{}
+	endpoints := []*address.Addr{}
 	for _, route := range routes {
 		url := fmt.Sprintf("https://%s/%s", domain.Address, route)
 		endpoints = append(endpoints, address.NewSourced(url, domain.Source))

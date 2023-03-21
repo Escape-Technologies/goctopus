@@ -12,7 +12,7 @@ import (
 )
 
 // @todo test this
-func FingerprintSubDomain(domain *address.Sourced) (*output.FingerprintOutput, error) {
+func FingerprintSubDomain(domain *address.Addr) (*output.FingerprintOutput, error) {
 	endpoints := endpoint.FuzzRoutes(domain)
 
 	for _, url := range endpoints {

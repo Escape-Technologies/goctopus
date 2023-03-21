@@ -45,7 +45,7 @@ func makeMockedEndpointFingerprinter(graphql bool, introspection bool) *mockedEn
 // @todo test field suggestion
 func TestFingerprintUrl(t *testing.T) {
 
-	url := &address.Sourced{
+	url := &address.Addr{
 		Address: "https://example.com/graphql",
 		Source:  "example.com",
 	}

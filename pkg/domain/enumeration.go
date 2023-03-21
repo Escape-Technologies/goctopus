@@ -9,13 +9,13 @@ import (
 	"github.com/projectdiscovery/subfinder/v2/pkg/runner"
 )
 
-func makeCallback(domain *address.Sourced, subDomains chan *address.Sourced) func(s *resolve.HostEntry) {
+func makeCallback(domain *address.Addr, subDomains chan *address.Addr) func(s *resolve.HostEntry) {
 	return func(s *resolve.HostEntry) {
 		subDomains <- address.NewSourced(s.Host, domain.Source)
 	}
 }
 
-func EnumerateSubdomains(domain *address.Sourced, subDomains chan *address.Sourced) (err error) {
+func EnumerateSubdomains(domain *address.Addr, subDomains chan *address.Addr) (err error) {
 	subDomains <- domain
 	c := config.Get()
 

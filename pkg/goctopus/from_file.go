@@ -18,7 +18,7 @@ func FingerprintFromFile(input *os.File) {
 
 	maxWorkers := config.Get().MaxWorkers
 	log.Infof("Starting %d workers\n", maxWorkers)
-	addresses := make(chan *address.Sourced, maxWorkers)
+	addresses := make(chan *address.Addr, maxWorkers)
 	output := make(chan *out.FingerprintOutput, maxWorkers)
 
 	go FingerprintAddresses(addresses, output)
@@ -26,7 +26,7 @@ func FingerprintFromFile(input *os.File) {
 	go func() {
 		for inputBuffer.Scan() {
 			addr := inputBuffer.Text()
-			addresses <- address.NewSourced(addr, addr)
+			addresses <- address.New(addr)
 		}
 		close(addresses)
 	}()

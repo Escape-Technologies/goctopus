@@ -12,7 +12,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func worker(addresses chan *address.Sourced, output chan *output.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
+func worker(addresses chan *address.Addr, output chan *output.FingerprintOutput, workerId int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	log.Debugf("Worker %d instantiated", workerId)
 	for address := range addresses {
@@ -26,7 +26,7 @@ func worker(addresses chan *address.Sourced, output chan *output.FingerprintOutp
 	log.Debugf("Worker %d finished", workerId)
 }
 
-func FingerprintAddress(address *address.Sourced) (*output.FingerprintOutput, error) {
+func FingerprintAddress(address *address.Addr) (*output.FingerprintOutput, error) {
 	// If the domain is a url, we don't need to crawl it
 	if utils.IsUrl(address.Address) {
 		return endpoint.FingerprintEndpoint(address)
@@ -36,10 +36,10 @@ func FingerprintAddress(address *address.Sourced) (*output.FingerprintOutput, er
 }
 
 // An addresses can be a domain or an url
-func FingerprintAddresses(addresses chan *address.Sourced, output chan *output.FingerprintOutput) {
+func FingerprintAddresses(addresses chan *address.Addr, output chan *output.FingerprintOutput) {
 
 	maxWorkers := config.Get().MaxWorkers
-	enumeratedAddresses := make(chan *address.Sourced, config.Get().MaxWorkers)
+	enumeratedAddresses := make(chan *address.Addr, config.Get().MaxWorkers)
 
 	workersWg := sync.WaitGroup{}
 	workersWg.Add(maxWorkers)
