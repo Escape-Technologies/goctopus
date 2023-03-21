@@ -1,0 +1,17 @@
+# update report card on push on main
+name: 🧚‍♀️ Update Report Card
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  report-card:
+    name: Update Report Card
+    runs-on: ubuntu-latest
+    steps:
+      - name: Request Report Update
+        run: |
+          curl -X POST -F "repo=github.com/$GITHUB_REPOSITORY" https://goreportcard.com/checks
