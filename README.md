@@ -42,7 +42,7 @@ INFO[0002] Done. Found 1 graphql endpoint
 Using go:
 
 ```BASH
-go install -v github.com/escape-technologies/goctopus@latest
+go install -v github.com/Escape-Technologies/goctopus/cmd/goctopus@latest
 goctopus example.com
 ```
 
