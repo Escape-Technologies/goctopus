@@ -18,8 +18,8 @@ func openOutputFile(config *config.Config) (*os.File, error) {
 }
 
 func handleSingleOutput(output *FingerprintOutput, outputFile *os.File, wg *sync.WaitGroup, config *config.Config) {
-	isOutputFile := config.OutputFile != ""
-	isWebhook := config.WebhookUrl != ""
+	hasOutputFile := config.OutputFile != ""
+	hasWebhook := config.WebhookUrl != ""
 
 	jsonOutput, err := json.Marshal(output)
 	log.Infof("Found: %+v\n", string(jsonOutput))
@@ -27,14 +27,14 @@ func handleSingleOutput(output *FingerprintOutput, outputFile *os.File, wg *sync
 		log.Error(err)
 	}
 
-	if isOutputFile {
+	if hasOutputFile {
 		content := append(jsonOutput, []byte("\n")...)
 		if _, err := outputFile.Write(content); err != nil {
 			log.Error(err)
 		}
 	}
 
-	if isWebhook {
+	if hasWebhook {
 		wg.Add(1)
 		go func() {
 			if err := http.SendToWebhook(config.WebhookUrl, jsonOutput, wg); err != nil {
