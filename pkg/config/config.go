@@ -76,7 +76,7 @@ func LoadFromArgs() {
 		log.SetLevel(log.ErrorLevel)
 	}
 
-	if err := ValidateConfig(&config); err != nil {
+	if err := validateConfig(&config, true); err != nil {
 		log.Error(err)
 		flag.PrintDefaults()
 		os.Exit(1)
@@ -85,7 +85,10 @@ func LoadFromArgs() {
 	c = &config
 }
 
-func ValidateConfig(conf *Config) error {
+// Validates the config.
+// `cli` is used to determine if the config is loaded from the CLI or from a file.
+// If cli is false, then the addresses check is skipped.
+func validateConfig(conf *Config, isCli bool) error {
 	if conf.MaxWorkers < 1 {
 		return errors.New("[Invalid config] Max workers must be greater than 0")
 	}
@@ -98,7 +101,7 @@ func ValidateConfig(conf *Config) error {
 		return errors.New("[Invalid config] Introspection has to be enabled to use field suggestion fingerprinting")
 	}
 
-	if conf.InputFile == "" && len(conf.Addresses) == 0 {
+	if isCli && c.InputFile == "" && len(c.Addresses) == 0 {
 		return errors.New("[Invalid config] Please specify an input file or a list of addresses")
 	}
 
@@ -106,7 +109,7 @@ func ValidateConfig(conf *Config) error {
 }
 
 func Load(config *Config) {
-	if err := ValidateConfig(config); err != nil {
+	if err := validateConfig(config, false); err != nil {
 		log.Error(err)
 		flag.PrintDefaults()
 		os.Exit(1)

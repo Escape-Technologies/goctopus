@@ -17,7 +17,7 @@ func worker(addresses chan *address.Addr, output chan *output.FingerprintOutput,
 	log.Debugf("Worker %d instantiated", workerId)
 	for address := range addresses {
 		log.Debugf("Worker %d started on: %v", workerId, address)
-		res, err := FingerprintAddress(address)
+		res, err := fingerprintAddress(address)
 		if err == nil {
 			log.Debugf("Worker %d found endpoint: %v", workerId, res)
 			output <- res
@@ -26,7 +26,10 @@ func worker(addresses chan *address.Addr, output chan *output.FingerprintOutput,
 	log.Debugf("Worker %d finished", workerId)
 }
 
-func FingerprintAddress(address *address.Addr) (*output.FingerprintOutput, error) {
+/**
+ * Fingerprint an address, without subdomain enumeration
+ */
+func fingerprintAddress(address *address.Addr) (*output.FingerprintOutput, error) {
 	// If the domain is a url, we don't need to crawl it
 	if utils.IsUrl(address.Address) {
 		return endpoint.FingerprintEndpoint(address)
@@ -65,6 +68,6 @@ func FingerprintAddresses(addresses chan *address.Addr, output chan *output.Fing
 	close(enumeratedAddresses)
 	log.Debugf("Waiting for workers to finish...")
 	workersWg.Wait()
-	close(output)
 	log.Debugf("All workers finished")
+	close(output)
 }
