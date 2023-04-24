@@ -11,7 +11,9 @@ import (
 
 func makeCallback(domain *address.Addr, subDomains chan *address.Addr) func(s *resolve.HostEntry) {
 	return func(s *resolve.HostEntry) {
-		subDomains <- address.NewSourced(s.Host, domain.Source)
+		addr := domain.Copy()
+		addr.Address = s.Host
+		subDomains <- addr
 	}
 }
 

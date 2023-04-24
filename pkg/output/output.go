@@ -12,7 +12,6 @@ type FingerprintResult string
 const (
 	ResultOpenGraphql         FingerprintResult = "OPEN_GRAPHQL"
 	ResultAuthentifiedGraphql FingerprintResult = "AUTHENTIFIED_GRAPHQL"
-	// ResultMaybeGraphql FingerprintResult = "MAYBE_GRAPHQL"
 )
 
 type FingerprintOutput struct {
@@ -21,7 +20,8 @@ type FingerprintOutput struct {
 	Url             string            `json:"url"`
 	Introspection   bool              `json:"introspection"`
 	FieldSuggestion bool              `json:"field_suggestion"`
-	Source          string            `json:"source"` // the original address used to fingerprint the endpoint
+	Source          string            `json:"source"`   // the original address used to fingerprint the endpoint
+	Metadata        map[string]string `json:"metadata"` // optional metadata
 }
 
 func (o *FingerprintOutput) MarshalJSON() ([]byte, error) {
@@ -54,6 +54,10 @@ func marshalOutput(o *FingerprintOutput, c *config.Config) ([]byte, error) {
 	// when scanning from an url, the domain is not set so we infer it from the url
 	if o.Domain == "" && o.Url != "" {
 		outputMap["domain"] = utils.DomainFromUrl(o.Url)
+	}
+
+	if o.Metadata == nil || len(o.Metadata) == 0 {
+		delete(outputMap, "metadata")
 	}
 
 	return json.Marshal(outputMap)

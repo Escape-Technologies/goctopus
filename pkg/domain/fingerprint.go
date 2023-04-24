@@ -48,6 +48,7 @@ func FingerprintSubDomain(domain *address.Addr) (*output.FingerprintOutput, erro
 		}
 		output.Domain = domain.Address
 		output.Source = domain.Source
+		output.Metadata = domain.Metadata
 		return output, nil
 	}
 	return nil, errors.New("no graphql endpoint found")

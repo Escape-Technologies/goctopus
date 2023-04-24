@@ -12,3 +12,6 @@ testers
 
 dist/
 .env
+
+# root go files (often used for testing / prototyping)
+/*.go
