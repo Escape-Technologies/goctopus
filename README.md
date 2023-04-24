@@ -173,8 +173,8 @@ docker run --rm -it escapetech/goctopus:A.B.C [args]
 - [ ] Engine fingerprinting.
 - [x] Refactor to make goctopus usable as a go package.
 - [ ] Document goctopus as a go package.
-- [ ] Better flags.
-- [ ] Better logs.
+- [ ] Better flags.  
+- [ ] Better logs.  
 - [x] Direct cli input.
 - [ ] Improve performance further.
 - [ ] Resume from output file.
