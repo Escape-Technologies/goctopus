@@ -22,7 +22,7 @@ func EnumerateSubdomains(domain *address.Addr, subDomains chan *address.Addr) (e
 	c := config.Get()
 
 	if !c.SubdomainEnumeration {
-		domain.DoneWithoutCascade()
+		domain.Done()
 		return nil
 	}
 
@@ -36,6 +36,6 @@ func EnumerateSubdomains(domain *address.Addr, subDomains chan *address.Addr) (e
 	})
 
 	err = runnerInstance.EnumerateSingleDomain(domain.Address, []io.Writer{})
-	domain.DoneWithoutCascade()
+	domain.Done()
 	return err
 }

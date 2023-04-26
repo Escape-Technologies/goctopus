@@ -11,10 +11,9 @@ type Addr struct {
 	Address     string
 	Source      string
 	Metadata    map[string]string
-	callback    func()  // callback to call when the origin is done (copies == 0)
-	copiesCount *int32  // number of copies of this address
-	children    []*Addr // copies of this address
-	done        bool    // true if done has been called, to prevent calling it twice
+	callback    func() // callback to call when the origin is done (copies == 0)
+	copiesCount *int32 // number of copies of this address
+	done        bool   // true if done has been called, to prevent calling it twice
 }
 
 func New(address string) *Addr {
@@ -24,7 +23,6 @@ func New(address string) *Addr {
 		Source:      address,
 		Metadata:    make(map[string]string),
 		copiesCount: &copiesCount,
-		children:    make([]*Addr, 0),
 		done:        false,
 	}
 	addr.callback = func() {
@@ -56,10 +54,8 @@ func (a *Addr) Copy() *Addr {
 		Metadata:    metadataCopy,
 		copiesCount: a.copiesCount,
 		callback:    a.callback,
-		children:    make([]*Addr, 0),
 		done:        false,
 	}
-	a.children = append(a.children, child)
 	return child
 }
 
@@ -69,23 +65,8 @@ func (a *Addr) Derive(newAddress string) *Addr {
 	return addr
 }
 
-func (a *Addr) Done() {
-	if a.done {
-		return
-	}
-	a.done = true
-	copies := atomic.AddInt32(a.copiesCount, -1)
-	// @todo remove this
-	if copies <= 0 {
-		a.callback()
-	}
-	for _, child := range a.children {
-		child.Done()
-	}
-}
-
 // don't call done on the children
-func (a *Addr) DoneWithoutCascade() {
+func (a *Addr) Done() {
 	if a.done {
 		return
 	}

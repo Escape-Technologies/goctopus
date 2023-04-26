@@ -11,9 +11,16 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+func cleanUpEndpoints(endpoints []*address.Addr) {
+	for _, endpoint := range endpoints {
+		endpoint.Done()
+	}
+}
+
 // @todo test this
 func FingerprintSubDomain(domain *address.Addr) (*output.FingerprintOutput, error) {
 	endpoints := endpoint.FuzzRoutes(domain)
+	defer cleanUpEndpoints(endpoints)
 
 	for _, addr := range endpoints {
 		output, err := endpoint.FingerprintEndpoint(addr)
