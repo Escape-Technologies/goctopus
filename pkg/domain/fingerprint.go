@@ -11,12 +11,19 @@ import (
 	"github.com/valyala/fasthttp"
 )
 
+func cleanUpEndpoints(endpoints []*address.Addr) {
+	for _, endpoint := range endpoints {
+		endpoint.Done()
+	}
+}
+
 // @todo test this
 func FingerprintSubDomain(domain *address.Addr) (*output.FingerprintOutput, error) {
 	endpoints := endpoint.FuzzRoutes(domain)
+	defer cleanUpEndpoints(endpoints)
 
-	for _, url := range endpoints {
-		output, err := endpoint.FingerprintEndpoint(url)
+	for _, addr := range endpoints {
+		output, err := endpoint.FingerprintEndpoint(addr)
 		// @todo close client
 		// fp.Close()
 
@@ -31,19 +38,18 @@ func FingerprintSubDomain(domain *address.Addr) (*output.FingerprintOutput, erro
 			// At the first timeout, drop the domain
 			// @todo number of tries in the config
 			if errors.Is(err, fasthttp.ErrTimeout) {
-				log.Infof("Timeout on %s, skipping.", domain)
-				return nil, err
+				log.Debugf("Timeout on %s, skipping.", domain.Address)
 			}
 
 			// If the host can't be resolved, drop the domain
 			var dnsErr *net.DNSError
 			if errors.As(err, &dnsErr) {
-				log.Infof("DNSError on %s, skipping.", domain)
-				return nil, err
+				log.Debugf("DNSError on %s, skipping.", domain.Address)
 			}
 
 			// Unknown error
-			log.Warnf("Unhandled error on %s, skipping. %v", domain, err)
+			// @todo check if we need to skip this or not
+			log.Debugf("Unhandled error on %s, skipping. %v", domain.Address, err)
 			return nil, err
 		}
 		output.Domain = domain.Address

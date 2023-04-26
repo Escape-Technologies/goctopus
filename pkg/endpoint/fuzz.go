@@ -23,7 +23,9 @@ func FuzzRoutes(domain *address.Addr) []*address.Addr {
 	endpoints := []*address.Addr{}
 	for _, route := range routes {
 		url := fmt.Sprintf("https://%s/%s", domain.Address, route)
-		endpoints = append(endpoints, address.NewSourced(url, domain.Source))
+		endpoint := domain.Copy()
+		endpoint.Address = url
+		endpoints = append(endpoints, endpoint)
 	}
 	return endpoints
 }
