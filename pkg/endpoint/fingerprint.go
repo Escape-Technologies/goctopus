@@ -52,11 +52,11 @@ func fingerprintEndpoint(url *address.Addr, e endpointFingerprinter, config *con
 	return out, nil
 }
 
-func FingerprintEndpoint(url *address.Addr) (*output.FingerprintOutput, error) {
+func FingerprintEndpoint(addr *address.Addr) (*output.FingerprintOutput, error) {
 	c := config.Get()
 	client := http.NewClient(c)
-	e := NewEndpointFingerprinter(url, client)
-	res, err := fingerprintEndpoint(url, e, c)
-	client.DeleteUrlCache(url.Address)
+	e := NewEndpointFingerprinter(addr, client)
+	res, err := fingerprintEndpoint(addr, e, c)
+	client.DeleteUrlCache(addr.Address)
 	return res, err
 }

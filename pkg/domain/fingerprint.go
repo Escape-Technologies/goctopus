@@ -15,8 +15,8 @@ import (
 func FingerprintSubDomain(domain *address.Addr) (*output.FingerprintOutput, error) {
 	endpoints := endpoint.FuzzRoutes(domain)
 
-	for _, url := range endpoints {
-		output, err := endpoint.FingerprintEndpoint(url)
+	for _, addr := range endpoints {
+		output, err := endpoint.FingerprintEndpoint(addr)
 		// @todo close client
 		// fp.Close()
 
@@ -31,20 +31,18 @@ func FingerprintSubDomain(domain *address.Addr) (*output.FingerprintOutput, erro
 			// At the first timeout, drop the domain
 			// @todo number of tries in the config
 			if errors.Is(err, fasthttp.ErrTimeout) {
-				log.Infof("Timeout on %s, skipping.", domain)
-				return nil, err
+				log.Debugf("Timeout on %s, skipping.", domain)
 			}
 
 			// If the host can't be resolved, drop the domain
 			var dnsErr *net.DNSError
 			if errors.As(err, &dnsErr) {
-				log.Infof("DNSError on %s, skipping.", domain)
-				return nil, err
+				log.Debugf("DNSError on %s, skipping.", domain)
 			}
 
 			// Unknown error
-			log.Warnf("Unhandled error on %s, skipping. %v", domain, err)
-			return nil, err
+			log.Debugf("Unhandled error on %s, not skipping. %v", domain, err)
+			// return nil, err
 		}
 		output.Domain = domain.Address
 		output.Source = domain.Source
