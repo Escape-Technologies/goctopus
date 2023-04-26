@@ -18,10 +18,11 @@ func makeCallback(domain *address.Addr, subDomains chan *address.Addr) func(s *r
 }
 
 func EnumerateSubdomains(domain *address.Addr, subDomains chan *address.Addr) (err error) {
-	subDomains <- domain
+	subDomains <- domain.Copy()
 	c := config.Get()
 
 	if !c.SubdomainEnumeration {
+		domain.DoneWithoutCascade()
 		return nil
 	}
 
@@ -35,5 +36,6 @@ func EnumerateSubdomains(domain *address.Addr, subDomains chan *address.Addr) (e
 	})
 
 	err = runnerInstance.EnumerateSingleDomain(domain.Address, []io.Writer{})
+	domain.DoneWithoutCascade()
 	return err
 }

@@ -42,7 +42,7 @@ func FingerprintSubDomain(domain *address.Addr) (*output.FingerprintOutput, erro
 
 			// Unknown error
 			log.Debugf("Unhandled error on %s, not skipping. %v", domain, err)
-			// return nil, err
+			return nil, err
 		}
 		output.Domain = domain.Address
 		output.Source = domain.Source

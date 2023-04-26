@@ -22,6 +22,7 @@ func worker(addresses chan *address.Addr, output chan *output.FingerprintOutput,
 			log.Debugf("Worker %d found endpoint: %v", workerId, res)
 			output <- res
 		}
+		address.Done()
 	}
 	log.Debugf("Worker %d finished", workerId)
 }
