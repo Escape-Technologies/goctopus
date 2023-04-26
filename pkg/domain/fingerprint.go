@@ -38,17 +38,18 @@ func FingerprintSubDomain(domain *address.Addr) (*output.FingerprintOutput, erro
 			// At the first timeout, drop the domain
 			// @todo number of tries in the config
 			if errors.Is(err, fasthttp.ErrTimeout) {
-				log.Debugf("Timeout on %s, skipping.", domain)
+				log.Debugf("Timeout on %s, skipping.", domain.Address)
 			}
 
 			// If the host can't be resolved, drop the domain
 			var dnsErr *net.DNSError
 			if errors.As(err, &dnsErr) {
-				log.Debugf("DNSError on %s, skipping.", domain)
+				log.Debugf("DNSError on %s, skipping.", domain.Address)
 			}
 
 			// Unknown error
-			log.Debugf("Unhandled error on %s, not skipping. %v", domain, err)
+			// @todo check if we need to skip this or not
+			log.Debugf("Unhandled error on %s, skipping. %v", domain.Address, err)
 			return nil, err
 		}
 		output.Domain = domain.Address
