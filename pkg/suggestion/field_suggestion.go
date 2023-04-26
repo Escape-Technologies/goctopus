@@ -9,7 +9,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// @todo this also probably needs to match if the query was right
 var (
 	SuggestionRegexp *regexp.Regexp
 )

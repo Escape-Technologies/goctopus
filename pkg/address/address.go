@@ -65,14 +65,13 @@ func (a *Addr) Derive(newAddress string) *Addr {
 	return addr
 }
 
-// don't call done on the children
+// Done should be called when the address is done being used.
 func (a *Addr) Done() {
 	if a.done {
 		return
 	}
 	a.done = true
 	copies := atomic.AddInt32(a.copiesCount, -1)
-	// @todo remove this
 	if copies <= 0 {
 		a.callback()
 	}
