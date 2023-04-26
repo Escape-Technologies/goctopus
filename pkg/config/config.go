@@ -101,7 +101,7 @@ func validateConfig(conf *Config, isCli bool) error {
 		return errors.New("[Invalid config] Introspection has to be enabled to use field suggestion fingerprinting")
 	}
 
-	if isCli && c.InputFile == "" && len(c.Addresses) == 0 {
+	if isCli && conf.InputFile == "" && len(conf.Addresses) == 0 {
 		return errors.New("[Invalid config] Please specify an input file or a list of addresses")
 	}
 
