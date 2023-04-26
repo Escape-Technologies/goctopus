@@ -30,7 +30,7 @@ Blazing fast graphql fingerprinting toolbox.
   __ _  ___   ___| |_ ___  _ __  _   _ ___
  / _` |/ _ \ / __| __/ _ \| '_ \| | | / __|
 | (_| | (_) | (__| || (_) | |_) | |_| \__ \
- \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.7
+ \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.8
  |___/                    |_|
 INFO[0000] Starting 100 workers
 INFO[0000] Found: {"domain":"gontoz.escape.tech","type":"OPEN_GRAPHQL","url":"https://gontoz.escape.tech", "source": "escape.tech"}
@@ -171,10 +171,11 @@ docker run --rm -it escapetech/goctopus:A.B.C [args]
 
 - [x] Better wordlist for field suggestion fingerprinting, to improve the detection performance and detection rate.
 - [ ] Engine fingerprinting.
+- [ ] Script analysis.
 - [x] Refactor to make goctopus usable as a go package.
 - [ ] Document goctopus as a go package.
 - [ ] Better flags.
-- [ ] Better logs.
+- [x] Better logs.
 - [x] Direct cli input.
 - [ ] Improve performance further.
 - [ ] Resume from output file.
