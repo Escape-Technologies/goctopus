@@ -18,11 +18,10 @@ func makeCallback(domain *address.Addr, subDomains chan *address.Addr) func(s *r
 }
 
 func EnumerateSubdomains(domain *address.Addr, subDomains chan *address.Addr) (err error) {
-	subDomains <- domain.Copy()
 	c := config.Get()
 
 	if !c.SubdomainEnumeration {
-		domain.Done()
+		subDomains <- domain
 		return nil
 	}
 

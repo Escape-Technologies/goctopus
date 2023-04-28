@@ -54,7 +54,7 @@ func LoadFromArgs() {
 	// -- CONFIG --
 	flag.StringVar(&config.OutputFile, "o", "output.jsonl", "Output file (json-lines format)")
 	flag.StringVar(&config.WebhookUrl, "webhook", "", "Webhook URL")
-	flag.IntVar(&config.MaxWorkers, "w", 100, "Max workers")
+	flag.IntVar(&config.MaxWorkers, "w", 40, "Max workers")
 	flag.BoolVar(&config.Verbose, "v", false, "Verbose")
 	flag.BoolVar(&config.Silent, "s", false, "Silent")
 	flag.IntVar(&config.Timeout, "t", 30, "Request timeout (seconds)")
