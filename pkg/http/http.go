@@ -130,7 +130,6 @@ func SendToWebhook(url string, body []byte, wg *sync.WaitGroup) error {
 
 	if res.StatusCode() != 200 {
 		log.Debugf("error from webhook %v: %v", url, res.StatusCode())
-		// return new error
 		return errors.New("webhook returned non-200 status code")
 	}
 	return nil
