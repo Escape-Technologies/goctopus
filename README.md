@@ -30,11 +30,13 @@ Blazing fast graphql fingerprinting toolbox.
   __ _  ___   ___| |_ ___  _ __  _   _ ___
  / _` |/ _ \ / __| __/ _ \| '_ \| | | / __|
 | (_| | (_) | (__| || (_) | |_) | |_| \__ \
- \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.8
+ \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.9
  |___/                    |_|
-INFO[0000] Starting 100 workers
-INFO[0000] Found: {"domain":"gontoz.escape.tech","type":"OPEN_GRAPHQL","url":"https://gontoz.escape.tech", "source": "escape.tech"}
-INFO[0002] Done. Found 1 graphql endpoint
+[INF] Enumerating subdomains for 'rickandmortyapi.com'
+[INF] Found 5 subdomains for 'rickandmortyapi.com' in 1 second 936 milliseconds
+INFO[0002] Found: {"domain":"rickandmortyapi.com","introspection":true,"source":"rickandmortyapi.com","type":"OPEN_GRAPHQL","url":"https://rickandmortyapi.com/graphql"}
+INFO[0003] Done fingerprinting rickandmortyapi.com
+INFO[0003] Done. Found 1 graphql endpoint
 `````
 
 ## Usage
@@ -125,11 +127,10 @@ The `type` field can be one of the following:
 
 ## Aditionnal options
 
-```BASH
+```TEXT
 Usage: goctopus [options] [addresses]
 [addresses]: A list of addresses to fingerprint, comma separated.
-Addresses can be in the form of http://example.com/graphql or example.com.
-If an input file is specified, this argument is ignored.
+Addresses can be in the form of http://example.com/graphql or example.com. If an input file is specified, this argument is ignored.
 [options]:
   -f string
     	Input file
@@ -147,7 +148,7 @@ If an input file is specified, this argument is ignored.
     	Request timeout (seconds) (default 30)
   -v	Verbose
   -w int
-    	Max workers (default 100)
+    	Max workers (default 40)
   -webhook string
     	Webhook URL
 ```
