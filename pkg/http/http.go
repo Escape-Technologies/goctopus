@@ -2,6 +2,7 @@ package http
 
 import (
 	"crypto/tls"
+	"errors"
 	"sync"
 	"time"
 
@@ -118,10 +119,18 @@ func SendToWebhook(url string, body []byte, wg *sync.WaitGroup) error {
 	req.SetRequestURI(url)
 	req.SetBody(body)
 	defer fasthttp.ReleaseRequest(req)
+	res := fasthttp.AcquireResponse()
+	defer fasthttp.ReleaseResponse(res)
 	log.Debug("Sending to webhook")
-	err := fastHttpClient.Do(req, nil)
+	err := fastHttpClient.Do(req, res)
 	if err != nil {
-		log.Debugf("Error from webhook %v: %v", url, err)
+		log.Debugf("error from webhook %v: %v", url, err)
+		return err
 	}
-	return err
+
+	if res.StatusCode() != 200 {
+		log.Debugf("error from webhook %v: %v", url, res.StatusCode())
+		return errors.New("webhook returned non-200 status code")
+	}
+	return nil
 }
