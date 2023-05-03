@@ -12,6 +12,9 @@ import (
 
 func openOutputFile(config *config.Config) (*os.File, error) {
 	// removes the file if it exists
+	if config.OutputFile == "" {
+		return nil, nil
+	}
 	os.Remove(config.OutputFile)
 	outputFile, err := os.OpenFile(config.OutputFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	return outputFile, err
