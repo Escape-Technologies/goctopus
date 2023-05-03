@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	VERSION = "v0.0.10"
+	VERSION = "v0.0.11"
 )
 
 func MinInt(a, b int) int {
