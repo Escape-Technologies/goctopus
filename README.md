@@ -30,7 +30,7 @@ Blazing fast graphql fingerprinting toolbox.
   __ _  ___   ___| |_ ___  _ __  _   _ ___
  / _` |/ _ \ / __| __/ _ \| '_ \| | | / __|
 | (_| | (_) | (__| || (_) | |_) | |_| \__ \
- \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.11
+ \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.12
  |___/                    |_|
 [INF] Enumerating subdomains for 'rickandmortyapi.com'
 [INF] Found 5 subdomains for 'rickandmortyapi.com' in 1 second 936 milliseconds
@@ -179,6 +179,6 @@ docker run --rm -it escapetech/goctopus:A.B.C [args]
 - [x] Better logs.
 - [x] Direct cli input.
 - [ ] Improve performance further.
-- [ ] Resume from output file.
-- [ ] Custom ascii art.
+- [ ] Resume from output file. (maybe)
+- [ ] Custom ascii art. (maybe)
 - [x] Docker
