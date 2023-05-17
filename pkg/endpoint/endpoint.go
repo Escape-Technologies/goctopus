@@ -15,7 +15,7 @@ type _endpointFingerprinter struct {
 
 type endpointFingerprinter interface {
 	IsOpenGraphql() (bool, error)
-	IsAuthentifiedGraphql() (bool, error)
+	IsAuthenticatedGraphql() (bool, error)
 	HasFieldSuggestion() (bool, error)
 	HasIntrospectionOpen() (bool, error)
 }
@@ -31,8 +31,8 @@ func (e *_endpointFingerprinter) IsOpenGraphql() (bool, error) {
 	return graphql.FingerprintOpenGraphql(e.url.Address, e.client)
 }
 
-func (e *_endpointFingerprinter) IsAuthentifiedGraphql() (bool, error) {
-	return graphql.FingerprintAuthentifiedGraphql(e.url.Address, e.client)
+func (e *_endpointFingerprinter) IsAuthenticatedGraphql() (bool, error) {
+	return graphql.FingerprintAuthenticatedGraphql(e.url.Address, e.client)
 }
 
 func (e *_endpointFingerprinter) HasFieldSuggestion() (bool, error) {

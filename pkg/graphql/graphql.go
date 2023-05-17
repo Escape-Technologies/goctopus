@@ -44,7 +44,7 @@ func FingerprintOpenGraphql(url string, client http.Client) (bool, error) {
 	return IsOpenGraphqlResponse(res), nil
 }
 
-func IsAuthentifiedGraphqlResponse(resp *http.Response) bool {
+func IsAuthenticatedGraphqlResponse(resp *http.Response) bool {
 	body := resp.Body
 
 	type Response struct {
@@ -58,7 +58,7 @@ func IsAuthentifiedGraphqlResponse(resp *http.Response) bool {
 		return false
 	}
 
-	if len(result.Errors) < 1 {
+	if len(result.Errors) == 0 {
 		return false
 	}
 
@@ -69,7 +69,7 @@ func IsAuthentifiedGraphqlResponse(resp *http.Response) bool {
 	return true
 }
 
-func FingerprintAuthentifiedGraphql(url string, client http.Client) (bool, error) {
+func FingerprintAuthenticatedGraphql(url string, client http.Client) (bool, error) {
 	body := &GraphqlPayload
 	res, err := client.Post(url, *body)
 	if err != nil {
@@ -77,5 +77,5 @@ func FingerprintAuthentifiedGraphql(url string, client http.Client) (bool, error
 		return false, err
 	}
 	log.Debugf("Response from %v: %v", url, res.StatusCode)
-	return IsAuthentifiedGraphqlResponse(res), nil
+	return IsAuthenticatedGraphqlResponse(res), nil
 }

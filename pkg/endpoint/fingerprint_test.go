@@ -11,18 +11,18 @@ import (
 )
 
 type mockedEndpointFingerprinter struct {
-	openGraphql         bool
-	authentifiedGraphql bool
-	introspection       bool
-	fieldSuggestion     bool
+	openGraphql          bool
+	authenticatedGraphql bool
+	introspection        bool
+	fieldSuggestion      bool
 }
 
 func (m *mockedEndpointFingerprinter) IsOpenGraphql() (bool, error) {
 	return m.openGraphql, nil
 }
 
-func (m *mockedEndpointFingerprinter) IsAuthentifiedGraphql() (bool, error) {
-	return m.authentifiedGraphql, nil
+func (m *mockedEndpointFingerprinter) IsAuthenticatedGraphql() (bool, error) {
+	return m.authenticatedGraphql, nil
 }
 
 func (m *mockedEndpointFingerprinter) HasIntrospectionOpen() (bool, error) {
@@ -49,7 +49,6 @@ func TestFingerprintUrl(t *testing.T) {
 		Address: "https://example.com/graphql",
 		Source:  "example.com",
 	}
-	_type := out.ResultOpenGraphql
 
 	table := []struct {
 		graphql                    bool
@@ -62,10 +61,10 @@ func TestFingerprintUrl(t *testing.T) {
 			true,
 			true,
 			&out.FingerprintOutput{
-				Introspection: true,
 				Url:           url.Address,
 				Source:        url.Source,
-				Type:          _type,
+				Authenticated: false,
+				SchemaStatus:  out.SchemaStatusOpen,
 			},
 			nil,
 			true,
@@ -74,10 +73,10 @@ func TestFingerprintUrl(t *testing.T) {
 			true,
 			false,
 			&out.FingerprintOutput{
-				Introspection: false,
 				Url:           url.Address,
 				Source:        url.Source,
-				Type:          _type,
+				Authenticated: false,
+				SchemaStatus:  out.SchemaStatusClosed,
 			},
 			nil,
 			true,
@@ -86,10 +85,10 @@ func TestFingerprintUrl(t *testing.T) {
 			true,
 			false,
 			&out.FingerprintOutput{
-				Introspection: false,
 				Url:           url.Address,
 				Source:        url.Source,
-				Type:          _type,
+				Authenticated: false,
+				SchemaStatus:  out.SchemaStatusClosed,
 			},
 			nil,
 			false,
