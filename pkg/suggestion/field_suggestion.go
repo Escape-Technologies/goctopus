@@ -56,11 +56,11 @@ func FingerprintFieldSuggestion(url string, client http.Client) bool {
 	for _, word := range *utils.Wordlist {
 		body := makePayload(word)
 		res, err := client.Post(url, body)
-		log.Debugf("Response from %v: %v", url, res.StatusCode)
 		if err != nil {
 			log.Debugf("Error from %v: %v", url, err)
 			return false
 		}
+		log.Debugf("Response from %v: %v", url, res.StatusCode)
 		if IsSuggestionResponse(res) {
 			return true
 		}
