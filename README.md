@@ -30,7 +30,7 @@ Blazing fast graphql fingerprinting toolbox.
   __ _  ___   ___| |_ ___  _ __  _   _ ___
  / _` |/ _ \ / __| __/ _ \| '_ \| | | / __|
 | (_| | (_) | (__| || (_) | |_) | |_| \__ \
- \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.12
+ \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.13
  |___/                    |_|
 [INF] Enumerating subdomains for 'rickandmortyapi.com'
 [INF] Found 5 subdomains for 'rickandmortyapi.com' in 1 second 936 milliseconds
