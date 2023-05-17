@@ -107,25 +107,25 @@ This is useful to bruteforce fields and/or types when introspection is disabled,
 
 ### Output
 
-The `-o` is used to specify the output file path. It defaults to `output.jsonl`.  
+The `-o` is used to specify the output file path. It defaults to `output.jsonl`.
 The output file is in json-lines format.
 Each line corresponds to one found graphql endpoint and will contain at least the following fields:
 
 ```JSON
 {
   "domain": "subdomain.example.com",
-  "type": "OPEN_GRAPHQL",
+  "authenticated": false,
   "url": "https://subdomain.example.com/graphql",
   "source": "example.com"
 }
 ```
 
-The `type` field can be one of the following:
+The `authenticated` field can be one of the following:
 
-- `OPEN_GRAPHQL`: The endpoint is a graphql endpoint.
-- `AUTHENTIFIED_GRAPHQL`: The endpoint is a graphql endpoint and requires authentication.
+- `true`: The endpoint is a graphql endpoint.
+- `false`: The endpoint is a graphql endpoint and requires authentication.
 
-## Aditionnal options
+## Additional options
 
 ```TEXT
 Usage: goctopus [options] [addresses]
