@@ -18,48 +18,45 @@ func TestMarshallOutput(t *testing.T) {
 	}{
 		{
 			&FingerprintOutput{
-				Domain:          domain,
-				Url:             url,
-				Introspection:   true,
-				FieldSuggestion: false,
-				Type:            ResultOpenGraphql,
-				Source:          source,
+				Domain:        domain,
+				Url:           url,
+				SchemaStatus:  SchemaStatusOpen,
+				Authenticated: false,
+				Source:        source,
 			},
 			&config.Config{
 				Introspection:   true,
 				FieldSuggestion: false,
 			},
-			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultOpenGraphql) + `","introspection":true` + `, "source":"` + source + `"}`,
+			`{"domain":"` + domain + `","url":"` + url + `","authenticated":false,"schema_status":"` + string(SchemaStatusOpen) + `","source":"` + source + `"}`,
 		},
 		{
 			&FingerprintOutput{
-				Domain:          domain,
-				Url:             url,
-				Introspection:   false,
-				FieldSuggestion: true,
-				Type:            ResultOpenGraphql,
-				Source:          source,
+				Domain:        domain,
+				Url:           url,
+				SchemaStatus:  SchemaStatusLeaking,
+				Authenticated: true,
+				Source:        source,
 			},
 			&config.Config{
 				Introspection:   true,
 				FieldSuggestion: true,
 			},
-			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultOpenGraphql) + `","field_suggestion":true, "introspection":false` + `, "source":"` + source + `"}`,
+			`{"domain":"` + domain + `","url":"` + url + `","authenticated":true,"schema_status":"` + string(SchemaStatusLeaking) + `", "source":"` + source + `"}`,
 		},
 		{
 			&FingerprintOutput{
-				Domain:          domain,
-				Url:             url,
-				Introspection:   false,
-				FieldSuggestion: false,
-				Type:            ResultAuthentifiedGraphql,
-				Source:          source,
+				Domain:        domain,
+				Url:           url,
+				SchemaStatus:  SchemaStatusClosed,
+				Authenticated: false,
+				Source:        source,
 			},
 			&config.Config{
 				Introspection:   false,
 				FieldSuggestion: false,
 			},
-			`{"domain":"` + domain + `","url":"` + url + `","type":"` + string(ResultAuthentifiedGraphql) + `",` + `"source":"` + source + `"}`,
+			`{"domain":"` + domain + `","url":"` + url + `","authenticated":false,"schema_status":"` + string(SchemaStatusClosed) + `",` + `"source":"` + source + `"}`,
 		},
 	}
 	for _, table := range tables {

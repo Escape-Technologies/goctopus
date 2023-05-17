@@ -7,7 +7,7 @@ import (
 	"github.com/Escape-Technologies/goctopus/pkg/http"
 )
 
-func TestIsAuthentifiedGraphqlResponse(t *testing.T) {
+func TestIsAuthenticatedGraphqlResponse(t *testing.T) {
 	tables := []struct {
 		resp *http.Response
 		want bool
@@ -69,9 +69,9 @@ func TestIsAuthentifiedGraphqlResponse(t *testing.T) {
 	}
 
 	for _, table := range tables {
-		got := IsAuthentifiedGraphqlResponse(table.resp)
+		got := IsAuthenticatedGraphqlResponse(table.resp)
 		if got != table.want {
-			t.Errorf("isAuthentifiedGraphqlResponse() was incorrect for %+v, got: %v, want: %v.", table.resp, got, table.want)
+			t.Errorf("IsAuthenticatedGraphqlResponse() was incorrect for %+v, got: %v, want: %v.", table.resp, got, table.want)
 		}
 	}
 

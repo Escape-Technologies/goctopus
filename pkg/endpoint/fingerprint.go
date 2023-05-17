@@ -13,42 +13,54 @@ var ErrNotGraphql = errors.New("no graphql endpoint found on this route")
 
 func fingerprintEndpoint(url *address.Addr, e endpointFingerprinter, config *config.Config) (*output.FingerprintOutput, error) {
 	out := &output.FingerprintOutput{
-		Url:    url.Address,
-		Source: url.Source,
-		Type:   output.ResultOpenGraphql,
+		Url:          url.Address,
+		Source:       url.Source,
+		SchemaStatus: output.SchemaStatusClosed,
 	}
+
 	isOpenGraphql, err := e.IsOpenGraphql()
 	if err != nil {
 		return nil, err
 	}
 
-	if !isOpenGraphql {
-		isAuthentifiedGraphql, err := e.IsAuthentifiedGraphql()
+	isAuthenticatedGraphql, err := e.IsAuthenticatedGraphql()
+	if err != nil {
+		return nil, err
+	}
 
+	if !isOpenGraphql && !isAuthenticatedGraphql {
+		return nil, ErrNotGraphql
+	}
+
+	if isAuthenticatedGraphql {
+		out.Authenticated = true
+		return out, nil
+	}
+
+	if config.Introspection {
+		hasIntrospectionOpen, err := e.HasIntrospectionOpen()
 		if err != nil {
 			return nil, err
 		}
 
-		if !isAuthentifiedGraphql {
-			return nil, ErrNotGraphql
+		if hasIntrospectionOpen {
+			out.SchemaStatus = output.SchemaStatusOpen
+		} else {
+			out.SchemaStatus = output.SchemaStatusClosed
 		}
-
-		out.Type = output.ResultAuthentifiedGraphql
 	}
 
-	if isOpenGraphql && config.Introspection {
-		out.Introspection, err = e.HasIntrospectionOpen()
+	if out.SchemaStatus == output.SchemaStatusClosed && config.FieldSuggestion {
+		hasFieldSuggestion, err := e.HasFieldSuggestion()
 		if err != nil {
 			return nil, err
 		}
-	}
 
-	if !out.Introspection && config.Introspection && config.FieldSuggestion {
-		out.FieldSuggestion, err = e.HasFieldSuggestion()
-		if err != nil {
-			return nil, err
+		if hasFieldSuggestion {
+			out.SchemaStatus = output.SchemaStatusLeaking
 		}
 	}
+
 	return out, nil
 }
 
