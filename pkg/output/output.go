@@ -41,15 +41,10 @@ func marshalOutput(o *FingerprintOutput, c *config.Config) ([]byte, error) {
 		panic(err)
 	}
 
-	// // remove the introspection field if it is disabled
-	// if !c.Introspection {
-	// 	delete(outputMap, "introspection")
-	// }
-
-	// // if introspection is enabled, remove the field_suggestion field
-	// if !c.FieldSuggestion || o. {
-	// 	delete(outputMap, "field_suggestion")
-	// }
+	// remove the schema_status field if introsepction is disabled
+	if !c.Introspection {
+		delete(outputMap, "schema_status")
+	}
 
 	// when scanning from an url, the domain is not set so we infer it from the url
 	if o.Domain == "" && o.Url != "" {
