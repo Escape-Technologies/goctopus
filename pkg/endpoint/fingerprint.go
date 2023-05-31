@@ -23,16 +23,16 @@ func fingerprintEndpoint(url *address.Addr, e endpointFingerprinter, config *con
 		return nil, err
 	}
 
-	isAuthenticatedGraphql, err := e.IsAuthenticatedGraphql()
-	if err != nil {
-		return nil, err
-	}
+	if !isOpenGraphql {
+		isAuthenticatedGraphql, err := e.IsAuthenticatedGraphql()
+		if err != nil {
+			return nil, err
+		}
 
-	if !isOpenGraphql && !isAuthenticatedGraphql {
-		return nil, ErrNotGraphql
-	}
+		if !isAuthenticatedGraphql {
+			return nil, ErrNotGraphql
+		}
 
-	if isAuthenticatedGraphql {
 		out.Authenticated = true
 		return out, nil
 	}
