@@ -62,6 +62,14 @@ func LoadFromArgs() {
 	flag.BoolVar(&config.FieldSuggestion, "suggest", false, "Enable fields suggestion fingerprinting.\nNeeds \"introspection\" to be enabled.")
 	flag.BoolVar(&config.SubdomainEnumeration, "subdomain", false, "Enable subdomain enumeration")
 
+	// -a (All) flag enables all fingerprinting methods
+	all := flag.Bool("a", false, "(All) Enable all fingerprinting methods: introspection, field suggestion, subdomain enumeration")
+	if *all {
+		config.Introspection = true
+		config.FieldSuggestion = true
+		config.SubdomainEnumeration = true
+	}
+
 	flag.Parse()
 
 	if config.InputFile == "" {
