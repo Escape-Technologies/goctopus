@@ -9,6 +9,8 @@ Blazing fast graphql fingerprinting toolbox.
 > ⚠️ Goctopus is still in very early development. Breaking changes are expected.
 
 `````TEXT
+goctopus -a rickandmortyapi.com
+
                     .-'   `'.
                    /         \
                    |         ;
@@ -33,10 +35,10 @@ Blazing fast graphql fingerprinting toolbox.
  \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.13
  |___/                    |_|
 [INF] Enumerating subdomains for 'rickandmortyapi.com'
-[INF] Found 5 subdomains for 'rickandmortyapi.com' in 1 second 936 milliseconds
-INFO[0002] Found: {"domain":"rickandmortyapi.com","introspection":true,"source":"rickandmortyapi.com","type":"OPEN_GRAPHQL","url":"https://rickandmortyapi.com/graphql"}
-INFO[0003] Done fingerprinting rickandmortyapi.com
-INFO[0003] Done. Found 1 graphql endpoint
+[INF] Found 5 subdomains for 'rickandmortyapi.com' in 15 seconds 276 milliseconds
+INFO[0016] Done fingerprinting rickandmortyapi.com
+INFO[0016] Found: {"authenticated":false,"domain":"rickandmortyapi.com","schema_status":"OPEN","source":"rickandmortyapi.com","url":"https://rickandmortyapi.com/graphql"}
+INFO[0016] Done. Found 1 graphql endpoints
 `````
 
 ## Usage
@@ -45,16 +47,18 @@ Using go:
 
 ```BASH
 go install -v github.com/Escape-Technologies/goctopus/cmd/goctopus@latest
-goctopus example.com
+goctopus -a example.com
 ```
 
 Using docker:
 
 ```BASH
-docker run --rm -it escapetech/goctopus:latest example.com
+docker run --rm -it escapetech/goctopus:latest -a example.com
 ```
 
 ## Main options & features
+
+It is recommended to use the `-a` flag as a shorthand to enable all the features (if you want detailed results, and don't care about speed).
 
 ### Input
 
@@ -67,7 +71,7 @@ The adresses can be specified directly in the command line, comma separated.
 Example:
 
 ```BASH
-goctopus example.com,https://example.com/graphql
+goctopus -a example.com,https://example.com/graphql
 ```
 
 #### Input file
@@ -132,12 +136,13 @@ Usage: goctopus [options] [addresses]
 [addresses]: A list of addresses to fingerprint, comma separated.
 Addresses can be in the form of http://example.com/graphql or example.com. If an input file is specified, this argument is ignored.
 [options]:
+  -a	(All) Enable all fingerprinting methods: introspection, field suggestion, subdomain enumeration
   -f string
     	Input file
   -introspect
     	Enable introspection fingerprinting
   -o string
-    	Output file (json-lines format) (default "output.jsonl")
+    	Output file (json-lines format)
   -s	Silent
   -subdomain
     	Enable subdomain enumeration
