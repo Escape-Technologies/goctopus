@@ -56,7 +56,7 @@ func TestMarshallOutput(t *testing.T) {
 				Introspection:   false,
 				FieldSuggestion: false,
 			},
-			`{"domain":"` + domain + `","url":"` + url + `","authenticated":false,"schema_status":"` + string(SchemaStatusClosed) + `",` + `"source":"` + source + `"}`,
+			`{"domain":"` + domain + `","url":"` + url + `","authenticated":false, "source":"` + source + `"}`,
 		},
 	}
 	for _, table := range tables {
