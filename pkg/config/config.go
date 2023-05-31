@@ -64,13 +64,14 @@ func LoadFromArgs() {
 
 	// -a (All) flag enables all fingerprinting methods
 	all := flag.Bool("a", false, "(All) Enable all fingerprinting methods: introspection, field suggestion, subdomain enumeration")
+
+	flag.Parse()
+
 	if *all {
 		config.Introspection = true
 		config.FieldSuggestion = true
 		config.SubdomainEnumeration = true
 	}
-
-	flag.Parse()
 
 	if config.InputFile == "" {
 		config.Addresses = parseArgs()
