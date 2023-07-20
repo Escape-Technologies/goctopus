@@ -32,7 +32,7 @@ goctopus -a rickandmortyapi.com
   __ _  ___   ___| |_ ___  _ __  _   _ ___
  / _` |/ _ \ / __| __/ _ \| '_ \| | | / __|
 | (_| | (_) | (__| || (_) | |_) | |_| \__ \
- \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.14
+ \__, |\___/ \___|\__\___/| .__/ \__,_|___/ v0.0.15
  |___/                    |_|
 [INF] Enumerating subdomains for 'rickandmortyapi.com'
 [INF] Found 5 subdomains for 'rickandmortyapi.com' in 15 seconds 276 milliseconds
