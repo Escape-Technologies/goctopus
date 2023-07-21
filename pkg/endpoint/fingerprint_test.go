@@ -33,6 +33,10 @@ func (m *mockedEndpointFingerprinter) HasFieldSuggestion() (bool, error) {
 	return m.fieldSuggestion, nil
 }
 
+func (m *mockedEndpointFingerprinter) GetEngine() string {
+	return ""
+}
+
 func (m *mockedEndpointFingerprinter) Close() {}
 
 func makeMockedEndpointFingerprinter(graphql bool, introspection bool) *mockedEndpointFingerprinter {
@@ -42,7 +46,7 @@ func makeMockedEndpointFingerprinter(graphql bool, introspection bool) *mockedEn
 	}
 }
 
-// @todo test field suggestion
+// @todo test field suggestion & engine fingerprinting
 func TestFingerprintUrl(t *testing.T) {
 
 	url := &address.Addr{

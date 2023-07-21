@@ -18,6 +18,7 @@ type endpointFingerprinter interface {
 	IsAuthenticatedGraphql() (bool, error)
 	HasFieldSuggestion() (bool, error)
 	HasIntrospectionOpen() (bool, error)
+	GetEngine() string
 }
 
 func NewEndpointFingerprinter(url *address.Addr, client http.Client) endpointFingerprinter {
@@ -41,4 +42,9 @@ func (e *_endpointFingerprinter) HasFieldSuggestion() (bool, error) {
 
 func (e *_endpointFingerprinter) HasIntrospectionOpen() (bool, error) {
 	return introspection.FingerprintIntrospection(e.url.Address, e.client)
+}
+
+func (e *_endpointFingerprinter) GetEngine() string {
+	return "not implemented"
+	// return engines.FingerprintEngine(e.url.Address, e.client)
 }

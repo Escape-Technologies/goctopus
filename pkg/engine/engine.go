@@ -3,6 +3,10 @@ package engine
 import (
 	"bytes"
 	"encoding/json"
+
+	"github.com/Escape-Technologies/goctopus/pkg/http"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type engine struct {
@@ -63,10 +67,30 @@ func hasJsonKey(key string) matcher {
 var Engines = []*engine{
 	Apollo,
 	AWSAppSync,
+	Agoo,
 	GraphQLGo,
 	Ruby,
 	GraphQLPHP,
 	Graphene,
 	Adriane,
 	GraphQLGopherGo,
+}
+
+func FingerprintEngine(url string, client http.Client) string {
+	for _, engine := range Engines {
+		for _, imprint := range engine.Imprints {
+			log.Debugf("Trying to match %s with %s", imprint.Query, engine.Name)
+			requestBody := http.QueryToRequestBody(imprint.Query)
+			resp, err := client.Post(url, []byte(requestBody))
+			if err != nil {
+				log.Debugf("Error from %v: %v", url, err)
+				continue
+			}
+			log.Debugf("Response: %s", resp.Body)
+			if imprint.Matcher(resp.Body) {
+				return engine.Name
+			}
+		}
+	}
+	return "unknown"
 }
