@@ -38,7 +38,11 @@ func inResponseText(matches []string) matcher {
 func inSection(section string, matches []string) matcher {
 	return func(responseBody *[]byte) bool {
 		var reponseBody map[string]interface{}
-		json.Unmarshal(*responseBody, &reponseBody)
+		err := json.Unmarshal(*responseBody, &reponseBody)
+		if err != nil {
+			log.Debugf("Error unmarshalling response body: %v", err)
+			return false
+		}
 		content, err := json.Marshal(reponseBody[section])
 		if err != nil {
 			return false

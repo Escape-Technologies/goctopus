@@ -87,6 +87,10 @@ func LoadFromArgs() {
 		log.SetLevel(log.ErrorLevel)
 	}
 
+	if !config.Silent {
+		utils.PrintASCII()
+	}
+
 	if err := validateConfig(&config, true); err != nil {
 		log.Error(err)
 		flag.PrintDefaults()
@@ -116,6 +120,10 @@ func validateConfig(conf *Config, isCli bool) error {
 		return errors.New("[Invalid config] Please specify an input file or a list of addresses")
 	}
 
+	if conf.EngineFingerprinting {
+		log.Warn("[Experimental] GraphQL engine fingerprinting is enabled. This feature is experimental and may produce false positives. Contributions are welcome to add new engines and test the feature.")
+	}
+
 	return nil
 }
 
@@ -134,5 +142,9 @@ func Load(config *Config) {
 
 	if c.Silent {
 		log.SetLevel(log.ErrorLevel)
+	}
+
+	if !config.Silent {
+		utils.PrintASCII()
 	}
 }

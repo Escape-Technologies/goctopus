@@ -3,7 +3,6 @@ package main
 import (
 	"os"
 
-	"github.com/Escape-Technologies/goctopus/internal/utils"
 	"github.com/Escape-Technologies/goctopus/pkg/config"
 	"github.com/Escape-Technologies/goctopus/pkg/goctopus"
 
@@ -12,9 +11,6 @@ import (
 
 func main() {
 	config.LoadFromArgs()
-	if !config.Get().Silent {
-		utils.PrintASCII()
-	}
 
 	if config.Get().InputFile != "" {
 		input, err := os.Open(config.Get().InputFile)
