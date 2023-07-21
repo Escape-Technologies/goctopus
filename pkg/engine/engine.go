@@ -76,7 +76,15 @@ var Engines = []*engine{
 	GraphQLGopherGo,
 }
 
+func addScore(engineName string, scores map[string]int) {
+	if _, ok := scores[engineName]; !ok {
+		scores[engineName] = 0
+	}
+	scores[engineName]++
+}
+
 func FingerprintEngine(url string, client http.Client) string {
+	scores := make(map[string]int) // engine name -> score
 	for _, engine := range Engines {
 		for _, imprint := range engine.Imprints {
 			log.Debugf("Trying to match %s with %s", imprint.Query, engine.Name)
@@ -88,9 +96,26 @@ func FingerprintEngine(url string, client http.Client) string {
 			}
 			log.Debugf("Response: %s", resp.Body)
 			if imprint.Matcher(resp.Body) {
-				return engine.Name
+				addScore(engine.Name, scores)
 			}
 		}
 	}
+
+	log.Debugf("Scores for %s: %v", url, scores)
+
+	// Find the engine with the highest score.
+	var maxScore int
+	var maxScoreEngine string
+	for engineName, score := range scores {
+		if score > maxScore {
+			maxScore = score
+			maxScoreEngine = engineName
+		}
+	}
+
+	if maxScore > 0 {
+		return maxScoreEngine
+	}
+
 	return "unknown"
 }

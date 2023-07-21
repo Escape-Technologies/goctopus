@@ -22,6 +22,7 @@ type Config struct {
 	FieldSuggestion      bool
 	WebhookUrl           string
 	SubdomainEnumeration bool
+	EngineFingerprinting bool
 }
 
 var (
@@ -61,9 +62,10 @@ func LoadFromArgs() {
 	flag.BoolVar(&config.Introspection, "introspect", false, "Enable introspection fingerprinting")
 	flag.BoolVar(&config.FieldSuggestion, "suggest", false, "Enable fields suggestion fingerprinting.\nNeeds \"introspection\" to be enabled.")
 	flag.BoolVar(&config.SubdomainEnumeration, "subdomain", false, "Enable subdomain enumeration")
+	flag.BoolVar(&config.EngineFingerprinting, "engine", false, "[Experimental] Enable GraphQL engine fingerprinting")
 
 	// -a (All) flag enables all fingerprinting methods
-	all := flag.Bool("a", false, "(All) Enable all fingerprinting methods: introspection, field suggestion, subdomain enumeration")
+	all := flag.Bool("a", false, "(All) Enable all stable fingerprinting methods: introspection, field suggestion, subdomain enumeration")
 
 	flag.Parse()
 

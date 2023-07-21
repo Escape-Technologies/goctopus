@@ -23,6 +23,10 @@ func fingerprintEndpoint(url *address.Addr, e endpointFingerprinter, config *con
 		return nil, err
 	}
 
+	if config.EngineFingerprinting {
+		out.Engine = e.GetEngine()
+	}
+
 	if !isOpenGraphql {
 		isAuthenticatedGraphql, err := e.IsAuthenticatedGraphql()
 		if err != nil {

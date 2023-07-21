@@ -2,6 +2,7 @@ package endpoint
 
 import (
 	"github.com/Escape-Technologies/goctopus/pkg/address"
+	"github.com/Escape-Technologies/goctopus/pkg/engine"
 	"github.com/Escape-Technologies/goctopus/pkg/graphql"
 	"github.com/Escape-Technologies/goctopus/pkg/http"
 	"github.com/Escape-Technologies/goctopus/pkg/introspection"
@@ -45,6 +46,5 @@ func (e *_endpointFingerprinter) HasIntrospectionOpen() (bool, error) {
 }
 
 func (e *_endpointFingerprinter) GetEngine() string {
-	return "not implemented"
-	// return engines.FingerprintEngine(e.url.Address, e.client)
+	return engine.FingerprintEngine(e.url.Address, e.client)
 }
