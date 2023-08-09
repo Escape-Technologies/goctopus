@@ -3,6 +3,7 @@ package http
 import (
 	"crypto/tls"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -133,4 +134,8 @@ func SendToWebhook(url string, body []byte, wg *sync.WaitGroup) error {
 		return errors.New("webhook returned non-200 status code")
 	}
 	return nil
+}
+
+func QueryToRequestBody(query string) []byte {
+	return []byte(fmt.Sprintf(`{"query":"%s"}`, query))
 }

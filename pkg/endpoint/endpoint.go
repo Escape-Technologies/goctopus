@@ -2,6 +2,7 @@ package endpoint
 
 import (
 	"github.com/Escape-Technologies/goctopus/pkg/address"
+	"github.com/Escape-Technologies/goctopus/pkg/engine"
 	"github.com/Escape-Technologies/goctopus/pkg/graphql"
 	"github.com/Escape-Technologies/goctopus/pkg/http"
 	"github.com/Escape-Technologies/goctopus/pkg/introspection"
@@ -18,6 +19,7 @@ type endpointFingerprinter interface {
 	IsAuthenticatedGraphql() (bool, error)
 	HasFieldSuggestion() (bool, error)
 	HasIntrospectionOpen() (bool, error)
+	GetEngine() string
 }
 
 func NewEndpointFingerprinter(url *address.Addr, client http.Client) endpointFingerprinter {
@@ -41,4 +43,8 @@ func (e *_endpointFingerprinter) HasFieldSuggestion() (bool, error) {
 
 func (e *_endpointFingerprinter) HasIntrospectionOpen() (bool, error) {
 	return introspection.FingerprintIntrospection(e.url.Address, e.client)
+}
+
+func (e *_endpointFingerprinter) GetEngine() string {
+	return engine.FingerprintEngine(e.url.Address, e.client)
 }

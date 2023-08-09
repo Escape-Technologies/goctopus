@@ -22,6 +22,7 @@ type Config struct {
 	FieldSuggestion      bool
 	WebhookUrl           string
 	SubdomainEnumeration bool
+	EngineFingerprinting bool
 }
 
 var (
@@ -61,9 +62,10 @@ func LoadFromArgs() {
 	flag.BoolVar(&config.Introspection, "introspect", false, "Enable introspection fingerprinting")
 	flag.BoolVar(&config.FieldSuggestion, "suggest", false, "Enable fields suggestion fingerprinting.\nNeeds \"introspection\" to be enabled.")
 	flag.BoolVar(&config.SubdomainEnumeration, "subdomain", false, "Enable subdomain enumeration")
+	flag.BoolVar(&config.EngineFingerprinting, "engine", false, "[Experimental] Enable GraphQL engine fingerprinting")
 
 	// -a (All) flag enables all fingerprinting methods
-	all := flag.Bool("a", false, "(All) Enable all fingerprinting methods: introspection, field suggestion, subdomain enumeration")
+	all := flag.Bool("a", false, "(All) Enable all stable fingerprinting methods: introspection, field suggestion, subdomain enumeration")
 
 	flag.Parse()
 
@@ -83,6 +85,10 @@ func LoadFromArgs() {
 
 	if config.Silent {
 		log.SetLevel(log.ErrorLevel)
+	}
+
+	if !config.Silent {
+		utils.PrintASCII()
 	}
 
 	if err := validateConfig(&config, true); err != nil {
@@ -114,6 +120,10 @@ func validateConfig(conf *Config, isCli bool) error {
 		return errors.New("[Invalid config] Please specify an input file or a list of addresses")
 	}
 
+	if conf.EngineFingerprinting {
+		log.Warn("[Experimental] GraphQL engine fingerprinting is enabled. This feature is experimental and may produce false positives. Contributions are welcome to add new engines and test the feature.")
+	}
+
 	return nil
 }
 
@@ -132,5 +142,9 @@ func Load(config *Config) {
 
 	if c.Silent {
 		log.SetLevel(log.ErrorLevel)
+	}
+
+	if !config.Silent {
+		utils.PrintASCII()
 	}
 }
