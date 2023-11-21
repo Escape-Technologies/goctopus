@@ -22,6 +22,7 @@ type Config struct {
 	FieldSuggestion      bool
 	WebhookUrl           string
 	SubdomainEnumeration bool
+	Proxies              []string
 }
 
 var (
@@ -61,6 +62,7 @@ func LoadFromArgs() {
 	flag.BoolVar(&config.Introspection, "introspect", false, "Enable introspection fingerprinting")
 	flag.BoolVar(&config.FieldSuggestion, "suggest", false, "Enable fields suggestion fingerprinting.\nNeeds \"introspection\" to be enabled.")
 	flag.BoolVar(&config.SubdomainEnumeration, "subdomain", false, "Enable subdomain enumeration")
+	proxyStr := flag.String("proxy", "", "Proxies urls (comma separated)")
 
 	// -a (All) flag enables all fingerprinting methods
 	all := flag.Bool("a", false, "(All) Enable all fingerprinting methods: introspection, field suggestion, subdomain enumeration")
@@ -71,6 +73,10 @@ func LoadFromArgs() {
 		config.Introspection = true
 		config.FieldSuggestion = true
 		config.SubdomainEnumeration = true
+	}
+
+	if *proxyStr != "" {
+		config.Proxies = strings.Split(*proxyStr, ",")
 	}
 
 	if config.InputFile == "" {

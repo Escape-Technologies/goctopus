@@ -45,6 +45,7 @@ func initClient(config *config.Config) {
 		TLSConfig: &tls.Config{
 			InsecureSkipVerify: true,
 		},
+		Dial: RotatingProxyDialerTimeout(config.Proxies, time.Second*time.Duration(config.Timeout)),
 	}
 }
 
